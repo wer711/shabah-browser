@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Globe, Clock, ImageOff } from "lucide-react";
+import { Globe, Clock, ImageOff, ExternalLink } from "lucide-react";
 import type { SearchResultItem } from "@/store/search-store";
-import { useSearchStore } from "@/store/search-store";
 import { usePrivacyStore } from "@/store/privacy-store";
 
 interface ResultCardProps {
@@ -12,11 +11,7 @@ interface ResultCardProps {
 }
 
 function getDomain(url: string) {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
+  try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return url; }
 }
 
 function getPath(url: string) {
@@ -24,9 +19,7 @@ function getPath(url: string) {
     const u = new URL(url);
     const p = u.pathname + u.search;
     return p.length > 60 ? p.slice(0, 57) + "…" : p;
-  } catch {
-    return url;
-  }
+  } catch { return url; }
 }
 
 function faviconUrl(item: SearchResultItem) {
@@ -36,7 +29,6 @@ function faviconUrl(item: SearchResultItem) {
 }
 
 export function ResultCard({ item }: ResultCardProps) {
-  const { startProxy } = useSearchStore();
   const incrementPages = usePrivacyStore((s) => s.incrementPages);
   const [imgError, setImgError] = useState(false);
 
@@ -45,11 +37,12 @@ export function ResultCard({ item }: ResultCardProps) {
 
   const openResult = () => {
     incrementPages();
-    startProxy(item.url, item.name);
+    // Open in real browser tab — full browsing experience
+    window.open(item.url, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <div className="group/py-[var(--result-gap,8px)] py-[var(--result-gap,8px)]">
+    <div className="group py-2">
       <div className="flex items-center gap-2 mb-0.5">
         <div className="w-5 h-5 shrink-0 rounded-sm overflow-hidden bg-transparent flex items-center justify-center">
           {!imgError ? (
@@ -83,29 +76,36 @@ export function ResultCard({ item }: ResultCardProps) {
 
       <button
         onClick={openResult}
-        className="text-left w-full text-right"
+        className="text-left w-full text-right group/title"
       >
-        <h3 className="text-[17px] sm:text-[20px] font-normal leading-snug text-[#8ab4f8] hover:underline cursor-pointer">
-          {item.name || domain}
-        </h3>
+        <div className="flex items-start gap-2">
+          <h3 className="text-[17px] sm:text-[20px] font-normal leading-snug text-[#8ab4f8] hover:underline cursor-pointer flex-1">
+            {item.name || domain}
+          </h3>
+          <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/30 mt-1.5 shrink-0 opacity-0 group-hover/title:opacity-100 transition-opacity" />
+        </div>
       </button>
 
       {item.snippet && (
-        <p className="mt-0.5 text-sm text-muted-foreground leading-relaxed line-clamp-2">
-          {item.snippet}
-        </p>
+        <button
+          onClick={openResult}
+          className="text-left w-full text-right mt-0.5"
+        >
+          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+            {item.snippet}
+          </p>
+        </button>
       )}
     </div>
   );
 }
 
 export function ImageResultCard({ item }: ResultCardProps) {
-  const { startProxy } = useSearchStore();
   const incrementPages = usePrivacyStore((s) => s.incrementPages);
 
   const openResult = () => {
     incrementPages();
-    startProxy(item.url, item.name);
+    window.open(item.url, "_blank", "noopener,noreferrer");
   };
 
   return (

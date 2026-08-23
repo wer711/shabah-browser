@@ -1,33 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getZai } from "@/lib/zai";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-// No persistence of any kind — no cache, no log of user messages.
-// The chat endpoint is stateless by design.
+// AI Chat — graceful degradation when z-ai-web-dev-sdk is unavailable
+// (e.g., deployed on Vercel without .z-ai-config)
+
+let zaiAvailable = true;
+let zaiInstance: any = null;
+
+async function getZai() {
+  if (!zaiAvailable) return null;
+  try {
+    if (!zaiInstance) {
+      const ZAI = (await import("z-ai-web-dev-sdk")).default;
+      zaiInstance = await ZAI.create();
+    }
+    return zaiInstance;
+  } catch {
+    zaiAvailable = false;
+    return null;
+  }
+}
 
 interface HistoryTurn {
   role: "user" | "assistant" | "system";
   content: string;
 }
 
-function safeError(message: string) {
-  return NextResponse.json({ error: message }, { status: 502 });
-}
-
 export async function POST(req: NextRequest) {
-  let body: {
-    message?: string;
-    history?: HistoryTurn[];
-    contextUrl?: string;
-  };
+  let body: { message?: string; history?: HistoryTurn[]; contextUrl?: string };
   try {
-    body = (await req.json()) as {
-      message?: string;
-      history?: HistoryTurn[];
-      contextUrl?: string;
-    };
+    body = (await req.json()) as any;
   } catch {
     return NextResponse.json({ error: "صيغة JSON غير صالحة" }, { status: 400 });
   }
@@ -36,72 +40,57 @@ export async function POST(req: NextRequest) {
   const history = Array.isArray(body.history) ? body.history.slice(-12) : [];
   const contextUrl = (body.contextUrl || "").trim();
 
-  // Build the system prompt. Per spec: if contextUrl is present, instruct
-  // the model that the user is browsing a specific page.
-  let systemPrompt: string;
-  if (contextUrl) {
-    // Defensive: only pass the URL string, never any session metadata.
-    systemPrompt = `أنت مساعد شبح AI. المستخدم يتصفّح صفحة بعنوان ${contextUrl}. ساعده على فهمها أو لخّصها.`;
-  } else {
-    systemPrompt =
-      "أنت مساعد شبح AI — مساعد بحث مجهّل. لا تكشف أي معلومات شخصية. أجب بالعربية بإيجاز.";
+  const zai = await getZai();
+  if (!zai) {
+    return NextResponse.json({
+      reply: "🔒 المساعد الذكي متوفر فقط في بيئة التطوير المحلية. على الاستضافة العامة، يمكنك استخدام البحث والتصفح المجهّل بشكل كامل.",
+      sources: [],
+      degraded: true,
+    });
   }
 
-  // Compose the messages array. The store sends `history` INCLUDING the
-  // just-added user message (last item). We deduplicate: if the last
-  // history item is the same content as `message`, we don't append again.
-  const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+  let systemPrompt: string;
+  if (contextUrl) {
+    systemPrompt = `أنت مساعد شبح AI. المستخدم يتصفّح صفحة بعنوان ${contextUrl}. ساعده على فهمها أو لخّصها.`;
+  } else {
+    systemPrompt = "أنت مساعد شبح AI — مساعد بحث مجهّل. لا تكشف أي معلومات شخصية. أجب بالعربية بإيجاز.";
+  }
+
+  const messages: Array<{ role: string; content: string }> = [
     { role: "system", content: systemPrompt },
   ];
 
   for (const t of history) {
-    if (t && t.role && typeof t.content === "string" && t.content.trim()) {
+    if (t?.role && typeof t.content === "string" && t.content.trim()) {
       messages.push({ role: t.role, content: t.content });
     }
   }
-
-  // Fallback: if history was empty, use the explicit message field.
   if (messages.length === 1 && message) {
     messages.push({ role: "user", content: message });
   }
-
   if (messages.length < 2) {
     return NextResponse.json({ error: "message مطلوب" }, { status: 400 });
   }
 
   try {
-    const zai = await getZai();
-
-    // Race against a 5-minute timeout per spec.
     const timeout = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("timeout")), 5 * 60 * 1000)
     );
 
     const completion = (await Promise.race([
-      zai.chat.completions.create({
-        messages,
-        temperature: 0.6,
-      }),
+      zai.chat.completions.create({ messages, temperature: 0.6 }),
       timeout,
-    ])) as { choices?: Array<{ message?: { content?: string } }> };
+    ])) as any;
 
     const reply: string = completion?.choices?.[0]?.message?.content?.trim() || "";
+    if (!reply) return NextResponse.json({ error: "لم يصل ردّ من المساعد." }, { status: 502 });
 
-    if (!reply) {
-      return safeError("لم يصل ردّ من المساعد.");
-    }
-
-    return NextResponse.json({
-      reply,
-      sources: [],
-    });
-  } catch (e: unknown) {
+    return NextResponse.json({ reply, sources: [] });
+  } catch (e: any) {
     const err = e as { name?: string; message?: string };
     if (err?.name === "AbortError" || err?.message === "timeout") {
-      return safeError("انتهت مهلة المساعد. حاول مرة أخرى.");
+      return NextResponse.json({ error: "انتهت مهلة المساعد." }, { status: 502 });
     }
-    // Intentionally do NOT log user message contents anywhere.
-    console.error("[/api/ai/chat] error (no message content logged):", err?.message || "unknown");
-    return safeError("تعذّر الحصول على ردّ الآن. جرّب لاحقًا.");
+    return NextResponse.json({ error: "تعذّر الحصول على ردّ الآن." }, { status: 502 });
   }
 }

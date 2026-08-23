@@ -1,23 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getZai } from "@/lib/zai";
-import { metrics } from "@/lib/metrics";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-// In-memory cache (per-process) for identical queries — reduces latency
-// and avoids re-issuing the same search repeatedly. No persistent storage.
 const cache = new Map<string, { at: number; data: any }>();
-const CACHE_TTL = 1000 * 60 * 5; // 5 min
+const CACHE_TTL = 1000 * 60 * 5;
 
-function buildQuery(q: string, tab: string) {
-  if (tab === "news") {
-    return `${q} أخبار اليوم`;
+interface SearchResult {
+  url: string;
+  name: string;
+  snippet: string;
+  host_name: string;
+  rank: number;
+  date: string;
+  favicon: string;
+}
+
+// ── z-ai-web-dev-sdk (local dev only) ──
+let sdkOk: boolean | null = null;
+let sdk: any = null;
+
+async function searchSDK(query: string, num: number): Promise<SearchResult[] | null> {
+  if (sdkOk === false) return null;
+  try {
+    if (!sdk) {
+      const ZAI = (await import("z-ai-web-dev-sdk")).default;
+      sdk = await ZAI.create();
+      sdkOk = true;
+    }
+    const results = await sdk.functions.invoke("web_search", { query, num });
+    return (Array.isArray(results) ? results : []).map((r: any, i: number) => ({
+      url: r.url || "",
+      name: r.name || r.url || "",
+      snippet: r.snippet || "",
+      host_name: r.host_name || "",
+      rank: i,
+      date: r.date || "",
+      favicon: r.favicon || "",
+    }));
+  } catch {
+    sdkOk = false;
+    return null;
   }
-  if (tab === "images") {
-    return `${q} صور`;
-  }
-  return q;
 }
 
 export async function GET(req: NextRequest) {
@@ -25,73 +49,41 @@ export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const q = sp.get("q")?.trim();
   const tab = (sp.get("tab") as "web" | "news" | "images") || "web";
-  const num = parseInt(sp.get("num") || "20", 10) || 20;
-  const recencyDays = sp.get("recency_days")
-    ? parseInt(sp.get("recency_days") as string, 10)
-    : undefined;
+  const num = Math.min(parseInt(sp.get("num") || "20", 10) || 20, 50);
 
   if (!q) {
-    return NextResponse.json(
-      { error: "query (q) is required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "query (q) is required" }, { status: 400 });
   }
 
-  const cacheKey = `${q}|${tab}|${num}|${recencyDays ?? ""}`;
+  const cacheKey = `${q}|${tab}|${num}`;
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.at < CACHE_TTL) {
-    metrics.recordSearch(true);
     return NextResponse.json({
-      query: q,
-      tab,
-      cached: true,
-      latencyMs: Date.now() - started,
-      count: cached.data.length,
-      results: cached.data,
+      query: q, tab, cached: true, latencyMs: Date.now() - started,
+      count: cached.data.length, results: cached.data,
     });
   }
 
   try {
-    const zai = await getZai();
-    const finalQuery = buildQuery(q, tab);
+    // Try SDK
+    const sdkResults = await searchSDK(tab === "news" ? `${q} أخبار اليوم` : tab === "images" ? `${q} صور` : q, num);
+    if (sdkResults && sdkResults.length > 0) {
+      cache.set(cacheKey, { at: Date.now(), data: sdkResults });
+      return NextResponse.json({
+        query: q, tab, cached: false, source: "shabah",
+        latencyMs: Date.now() - started,
+        count: sdkResults.length, results: sdkResults,
+      });
+    }
 
-    const args: { query: string; num: number; recency_days?: number } = {
-      query: finalQuery,
-      num,
-    };
-    if (recencyDays) args.recency_days = recencyDays;
-
-    const results = await zai.functions.invoke("web_search", args);
-
-    // Normalize + lightly clean
-    const clean = (Array.isArray(results) ? results : []).map(
-      (r: any, i: number) => ({
-        url: r.url || "",
-        name: r.name || r.url || "",
-        snippet: r.snippet || "",
-        host_name: r.host_name || "",
-        rank: r.rank ?? i + 1,
-        date: r.date || "",
-        favicon: r.favicon || "",
-      })
-    );
-
-    cache.set(cacheKey, { at: Date.now(), data: clean });
-    metrics.recordSearch(false);
-
+    // SDK unavailable — return empty with flag so frontend can redirect
     return NextResponse.json({
-      query: q,
-      tab,
-      cached: false,
+      query: q, tab, cached: false, source: "redirect",
       latencyMs: Date.now() - started,
-      count: clean.length,
-      results: clean,
+      count: 0, results: [],
     });
   } catch (e: any) {
     console.error("[/api/search] error:", e);
-    return NextResponse.json(
-      { error: e?.message || "search failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: e?.message || "search failed" }, { status: 500 });
   }
 }

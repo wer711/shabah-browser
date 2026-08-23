@@ -32,7 +32,7 @@ const SPEED_DIAL = [
 ];
 
 export function HomeScreen() {
-  const { startProxy } = useSearchStore();
+  const incrementPages = usePrivacyStore((s) => s.incrementPages);
   const setQuery = useSearchStore((s) => s.setQuery);
   const setView = useSearchStore((s) => s.setView);
   const setResults = useSearchStore((s) => s.setResults);
@@ -80,7 +80,7 @@ export function HomeScreen() {
           {SPEED_DIAL.map((site, i) => (
             <button
               key={site.url}
-              onClick={() => startProxy(site.url)}
+              onClick={() => { incrementPages(); window.open(site.url, '_blank', 'noopener,noreferrer'); }}
               className={`group flex flex-col items-center gap-1.5 ${i >= 4 ? 'hidden sm:flex' : ''}`}
               title={lang === 'ar' ? `فتح ${site.name} بشكل مجهّل` : `Open ${site.nameEn} anonymously`}
             >
