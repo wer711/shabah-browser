@@ -94,19 +94,7 @@ export function ResultsView() {
 
       // Results from any source — display in-app
       if (data.source === 'none' && !append) {
-        if (data.needsBraveKey) {
-          setError(`البحث غير متاح حالياً. تحتاج إلى إضافة مفتاح Brave Search API المجاني في إعدادات Vercel.
-
-الخطوات:
-1. اذهب إلى brave.com/search/api وسجّل مجاناً
-2. انسخ مفتاح API
-3. في Vercel → Settings → Environment Variables → أضف BRAVE_API_KEY=مفتاحك
-4. أعد النشر (Redeploy)
-
-المجاني: 2000 بحث/شهر`);
-        } else {
-          setError('لا توجد نتائج. جرّب كلمات بحث مختلفة.');
-        }
+        setError('لا توجد نتائج. جرّب كلمات بحث مختلفة.');
         setResults([]);
         return;
       }
