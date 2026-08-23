@@ -113,6 +113,14 @@ const ar: Record<string, string> = {
   "home.zeroDataTitle": "صفر بيانات",
   "home.zeroDataSubtitle": "التزام الخصوصية",
   "home.zeroDataDesc": "لا نخزّن استعلامات البحث، لا سجلّات IP، لا كوكيز. كل العمليات تُنفّذ من الخادم نيابةً عنك فلا تصل هويتك لأي موقع.",
+  "home.feature_unrestricted_title": "بدون قيود على المنصات",
+  "home.feature_unrestricted_desc": "النتائج لا تُفلتر — كل ما هو موجود على الويب يظهر، بما في ذلك المحجوب.",
+  "home.feature_multihop_title": "توجيه متعدد العناوين",
+  "home.feature_multihop_desc": "حارس دخول ← عقدة وسيطة ← عقدة خروج. كل عقدة في دولة مختلفة.",
+  "home.feature_ai_title": "AI مدمج",
+  "home.feature_ai_desc": "موجز فوري فوق النتائج + مساعد دردشة «شبح AI» يلخّص أي صفحة بضغطة.",
+  "home.feature_firewall_title": "جدار ناري نشط",
+  "home.feature_firewall_desc": "حظر XSS، CSRF، فحص المنافذ، تعدين العملات، بصمة الإصبع — تلقائيًا.",
 
   // AI Summarizer
   "ai.summaryTitle": "موجز شبح AI",
@@ -366,6 +374,14 @@ const en: Record<string, string> = {
   "home.zeroDataTitle": "Zero Data",
   "home.zeroDataSubtitle": "Privacy Commitment",
   "home.zeroDataDesc": "We don't store search queries, no IP logs, no cookies. All operations are executed on our server on your behalf, so your identity never reaches any site.",
+  "home.feature_unrestricted_title": "Unrestricted Platform Results",
+  "home.feature_unrestricted_desc": "Results are not filtered — everything on the web appears, including blocked content.",
+  "home.feature_multihop_title": "Multi-Hop Routing",
+  "home.feature_multihop_desc": "Entry guard ← Middle node ← Exit node. Each node in a different country.",
+  "home.feature_ai_title": "Built-in AI",
+  "home.feature_ai_desc": "Instant summary above results + Shabah AI chat assistant to summarize any page.",
+  "home.feature_firewall_title": "Active Firewall",
+  "home.feature_firewall_desc": "Blocks XSS, CSRF, port scanning, crypto mining, fingerprinting — automatically.",
 
   // AI Summarizer
   "ai.summaryTitle": "Shabah AI Summary",

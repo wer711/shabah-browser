@@ -42,10 +42,10 @@ function AppShell() {
   };
 
   return (
-    <div className="flex h-dvh overflow-hidden">
+    <div className="flex h-screen overflow-hidden">
       <SettingsSync />
       <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <div className="flex-1 overflow-y-auto">{renderView()}</div>
         <Footer />
       </div>
@@ -59,9 +59,9 @@ export default function Home() {
   const mounted = useIsMounted();
   if (!mounted) {
     return (
-      <div className="flex items-center justify-center h-dvh bg-background">
-        <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
-          <span className="text-primary text-sm font-bold">ش</span>
+      <div className="flex items-center justify-center h-screen bg-background">
+        <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
+          <span className="text-primary text-lg font-bold">ش</span>
         </div>
       </div>
     );
