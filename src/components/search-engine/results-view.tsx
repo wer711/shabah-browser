@@ -139,7 +139,7 @@ export function ResultsView() {
   return (
     <main className="flex-1 w-full">
       {/* Top search bar (sticky) */}
-      <div className="sticky top-0 z-20 border-b border-border bg-background/80 backdrop-blur-md">
+      <div className="sticky top-12 md:top-0 z-20 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 py-3">
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
             <div className="flex items-center gap-2 shrink-0 sm:w-44">

@@ -99,3 +99,29 @@ Stage Summary:
 - Desktop: full sidebar (الرئيسية, النتائج, الإعدادات, شبح AI, هوية جديدة) + footer
 - Files modified: home-screen.tsx, footer.tsx, sidebar.tsx, page.tsx, search-bar.tsx
 - Files deleted: research-*.json (8), examples/, tests/, download/, agent-ctx/, *.sh, *.png from root
+---
+Task ID: 1
+Agent: Main Agent
+Task: Move mobile bottom bar to sidebar drawer, ensure responsive design across all devices
+
+Work Log:
+- Read all current files: sidebar.tsx, page.tsx, home-screen.tsx, footer.tsx, results-view.tsx, proxy-view.tsx, settings-view.tsx, admin-dashboard.tsx
+- Rewrote sidebar.tsx: removed MobileBottomBar component entirely, created MobileHeader component (hamburger menu bar visible on < md screens), created DrawerNavItems for mobile drawer navigation
+- MobileHeader: fixed top-0 header with شبح logo + hamburger menu button, slides in a drawer from the right side with backdrop overlay, locks body scroll when open
+- Desktop Sidebar: unchanged behavior, breakpoint changed from sm to md
+- Updated page.tsx: replaced MobileBottomBar with MobileHeader import, changed h-screen to h-dvh for proper mobile viewport
+- Fixed home-screen.tsx: removed pb-16 bottom-bar padding, changed scroll-mt to 12 md:0 for mobile header offset
+- Fixed results-view.tsx: sticky search bar offset from top-0 to top-12 md:top-0
+- Fixed proxy-view.tsx: sticky toolbar offset from top-0 to top-12 md:top-0  
+- Fixed settings-view.tsx: sticky header offset from top-0 to top-12 md:top-0, made Row label max-width responsive
+- Fixed admin-dashboard.tsx: sticky header offset from top-0 to top-12 md:top-0
+- Ran ESLint: clean (fixed one set-state-in-effect lint error by removing unnecessary useEffect)
+- Verified with agent-browser on iPhone 14 (mobile): MobileHeader shows, hamburger opens drawer, navigation works, settings view loads correctly
+- Verified with agent-browser on 1440x900 (desktop): sidebar shows with all nav items, no mobile header, all 8 speed dials visible, search results work properly
+- No console errors on either mobile or desktop
+
+Stage Summary:
+- MobileBottomBar completely removed
+- Navigation unified into sidebar: desktop shows persistent sidebar (md+), mobile shows drawer via hamburger menu (< md)
+- All sticky headers properly offset for mobile header height (48px / top-12)
+- Full responsive design verified across mobile and desktop

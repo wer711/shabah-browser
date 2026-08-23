@@ -89,7 +89,7 @@ export function ProxyView() {
   return (
     <main className="flex-1 w-full">
       {/* Toolbar */}
-      <div className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur-md">
+      <div className="sticky top-12 md:top-0 z-20 border-b border-border bg-background/85 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 py-2.5 flex items-center gap-2">
           <Button
             size="sm"

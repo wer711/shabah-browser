@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from 'react';
-import { Sidebar, MobileBottomBar } from '@/components/shabah/sidebar';
+import { Sidebar, MobileHeader } from '@/components/shabah/sidebar';
 import { HomeScreen } from '@/components/search-engine/home-screen';
 import { ResultsView } from '@/components/search-engine/results-view';
 import { ProxyView } from '@/components/search-engine/proxy-view';
@@ -42,15 +42,15 @@ function AppShell() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-dvh overflow-hidden">
       <SettingsSync />
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <MobileHeader />
         <div className="flex-1 overflow-y-auto">{renderView()}</div>
         <Footer />
       </div>
       <AiPanel />
-      <MobileBottomBar />
     </div>
   );
 }
@@ -59,7 +59,7 @@ export default function Home() {
   const mounted = useIsMounted();
   if (!mounted) {
     return (
-      <div className="flex items-center justify-center h-screen bg-background">
+      <div className="flex items-center justify-center h-dvh bg-background">
         <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
           <span className="text-primary text-lg font-bold">ش</span>
         </div>
