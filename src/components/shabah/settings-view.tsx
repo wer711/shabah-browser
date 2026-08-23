@@ -50,7 +50,7 @@ export function SettingsView() {
   return (
     <main className="flex-1 w-full">
       {/* Header */}
-      <div className="border-b border-border bg-background/80 backdrop-blur sticky top-12 md:top-0 z-10">
+      <div className="border-b border-border bg-background/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
           <div className="w-10 h-10 relative">
             <ShabahLogo size={40} />

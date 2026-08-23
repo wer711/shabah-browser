@@ -162,3 +162,32 @@ Stage Summary:
 - English branding text removed from Arabic mode
 - Font changed to Alexandria (matching reference site) with proper Arabic rendering
 - Lucide icons already match the outlined/stroke style used by the reference site
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Fix sticky header blocking view, properly apply fonts (Alexandria + Cairo)
+
+Work Log:
+- Analyzed uploaded screenshot: identified MobileHeader always visible on mobile blocking content during browsing
+- Diagnosed root cause: MobileHeader (48px) rendered for ALL views including proxy, plus sticky elements had wrong `top-12` offset
+- The `top-12` offset was wrong because MobileHeader is outside the scroll container (sibling, not parent)
+- Fixed page.tsx: MobileHeader now conditionally hidden when view === 'proxy' (browsing mode)
+- Changed all `sticky top-12 md:top-0` to `sticky top-0` in: results-view.tsx, proxy-view.tsx, settings-view.tsx, admin-dashboard.tsx
+- Removed `scroll-mt-12 md:scroll-mt-0` from home-screen.tsx (now just `scroll-mt-0`)
+- Removed unnecessary `sticky top-0 z-40` from MobileHeader (not in a scroll container)
+- Rewrote proxy-view.tsx: added inline hamburger menu button (mobile only) with drawer for navigation when MobileHeader is hidden
+- Added Cairo font (next/font/google) as secondary heading font, matching reference site (school.hanyhussain.com)
+- Fixed font-sans not applying: added `@apply font-sans` to body in @layer base
+- Added heading font rule in @layer base: h1-h6 use Cairo, body uses Alexandria
+- Updated globals.css: `--font-heading` variable, proxy-content font uses Alexandria instead of Geist Sans
+- Verified via agent-browser on mobile (375x812): MobileHeader hidden in proxy view, compact toolbar with hamburger shows, content fully visible
+- Verified via agent-browser on desktop (1440x900): Cairo font on headings, Alexandria on body, clean layout
+- Ran ESLint: 0 errors
+
+Stage Summary:
+- MobileHeader hidden in proxy view → maximum screen space for browsing
+- All sticky headers use correct `top-0` offset (no more 48px gap)
+- Proxy toolbar has its own hamburger menu for mobile navigation
+- Fonts properly applied: Alexandria (body), Cairo (headings) — matching reference site
+- Verified on mobile and desktop viewports with VLM analysis

@@ -86,7 +86,7 @@ export function AdminDashboard() {
 
   return (
     <main className="flex-1 w-full">
-      <div className="border-b border-border bg-background/80 backdrop-blur sticky top-12 md:top-0 z-10">
+      <div className="border-b border-border bg-background/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 relative">

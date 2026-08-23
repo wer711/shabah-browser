@@ -57,7 +57,7 @@ export function HomeScreen() {
   const exitRelay = relays.length >= 3 ? relays[2] : null;
 
   return (
-    <main className="flex-1 w-full scroll-mt-12 md:scroll-mt-0 pb-8">
+    <main className="flex-1 w-full scroll-mt-0 pb-8">
       {/* HERO */}
       <section className="grid-bg relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none opacity-[0.06]">

@@ -243,7 +243,7 @@ export function MobileHeader() {
   return (
     <>
       {/* Top bar */}
-      <header className="md:hidden sticky top-0 z-40 flex items-center justify-between h-12 px-3 border-b border-border bg-background/80 backdrop-blur-md">
+      <header className="md:hidden flex items-center justify-between h-12 px-3 border-b border-border bg-background/80 backdrop-blur-md">
         <button
           onClick={() => {
             reset();
