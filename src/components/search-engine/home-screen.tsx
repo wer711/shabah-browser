@@ -61,6 +61,10 @@ export function HomeScreen() {
     usePrivacyStore();
   const initialized = usePrivacyStore((s) => s.initialized);
   const setQuery = useSearchStore((s) => s.setQuery);
+  const setView = useSearchStore((s) => s.setView);
+  const setResults = useSearchStore((s) => s.setResults);
+  const setError = useSearchStore((s) => s.setError);
+  const setSummary = useSearchStore((s) => s.setSummary);
   const startProxy = useSearchStore((s) => s.startProxy);
   const openAIContext = useAIStore((s) => s.openWithContext);
   const toggleAI = useAIStore((s) => s.togglePanel);
@@ -68,6 +72,10 @@ export function HomeScreen() {
 
   const submitSuggestion = (text: string) => {
     setQuery(text);
+    setResults([]);
+    setError(null);
+    setSummary(null);
+    setView("results");
     window.dispatchEvent(
       new CustomEvent("onionsearch:submit", { detail: text })
     );

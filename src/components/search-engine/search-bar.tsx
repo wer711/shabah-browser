@@ -14,7 +14,7 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ variant = "hero", autoFocus = false }: SearchBarProps) {
-  const { query, setQuery } = useSearchStore();
+  const { query, setQuery, setView, setResults, setError, setSummary } = useSearchStore();
   const connected = usePrivacyStore((s) => s.connected);
   const [local, setLocal] = useState(query);
   const [focused, setFocused] = useState(false);
@@ -33,6 +33,10 @@ export function SearchBar({ variant = "hero", autoFocus = false }: SearchBarProp
     const value = (q ?? local).trim();
     if (!value) return;
     setQuery(value);
+    setResults([]);
+    setError(null);
+    setSummary(null);
+    setView("results");
     window.dispatchEvent(
       new CustomEvent("onionsearch:submit", { detail: value })
     );

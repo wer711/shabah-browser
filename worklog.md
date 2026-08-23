@@ -49,3 +49,28 @@ Stage Summary:
 - Admin dashboard and settings view are fully bilingual (Arabic/English)
 - No hydration errors (privacy-store uses deterministic SSR defaults)
 - Files modified: page.tsx, settings-sync.tsx (new), admin-dashboard.tsx, settings-view.tsx, i18n.ts
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Fix preview not showing (Z.ai logo only), fix search navigation bug
+
+Work Log:
+- Investigated why preview panel showed Z.ai logo instead of Shabah app
+- Root cause 1: Dev server process was being killed by sandbox between tool invocations
+- Root cause 2: Caddy (port 81) returns 502 when Next.js (port 3000) is not running → preview shows fallback
+- Fixed by using `setsid` to fully daemonize the dev server process
+- Added `allowedDevOrigins: ["21.0.4.34"]` to next.config.ts to fix cross-origin warning
+- Created watchdog script to auto-restart server if it dies
+- Root cause 3: Search button didn't navigate to results view (missing setView("results") call)
+- Fixed search-bar.tsx: submit() now calls setView("results"), setResults([]), setError(null), setSummary(null)
+- Fixed home-screen.tsx: submitSuggestion() now calls setView("results") and clears previous results
+- Verified with agent-browser: homepage renders, settings page works, search produces real results with AI summaries
+- Server confirmed stable: port 3000 (HTTP 200), port 81/Caddy (HTTP 200)
+
+Stage Summary:
+- Preview issue resolved: dev server now persists via setsid daemonization
+- Search navigation fixed: clicking search or pressing Enter now properly transitions to results view
+- Full verification completed: homepage, settings (tabs, theme, language), search with real results + AI summary
+- Files modified: next.config.ts, search-bar.tsx, home-screen.tsx
+- Files created: watchdog.sh, start-server.sh
