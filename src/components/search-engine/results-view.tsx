@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import { Search, Newspaper, Image as ImageIcon, AlertCircle, Loader2, ExternalLink } from "lucide-react";
+import { Search, Newspaper, Image as ImageIcon, AlertCircle, Loader2 } from "lucide-react";
 import { SearchBar } from "./search-bar";
 import { ResultCard, ImageResultCard, ResultSkeleton } from "./result-card";
 import { useSearchStore } from "@/store/search-store";
@@ -92,14 +92,22 @@ export function ResultsView() {
     try {
       const data = await doSearch(q, tTab, num);
 
-      // If SDK unavailable, navigate in-app to DuckDuckGo via proxy
-      if (data.source === 'redirect' && !append) {
-        incrementQueries();
-        const ddgUrl = `https://duckduckgo.com/?q=${encodeURIComponent(q)}`;
-        const { startProxy } = useSearchStore.getState();
-        startProxy(ddgUrl, 'DuckDuckGo');
+      // Results from any source — display in-app
+      if (data.source === 'none' && !append) {
+        if (data.needsBraveKey) {
+          setError(`البحث غير متاح حالياً. تحتاج إلى إضافة مفتاح Brave Search API المجاني في إعدادات Vercel.
+
+الخطوات:
+1. اذهب إلى brave.com/search/api وسجّل مجاناً
+2. انسخ مفتاح API
+3. في Vercel → Settings → Environment Variables → أضف BRAVE_API_KEY=مفتاحك
+4. أعد النشر (Redeploy)
+
+المجاني: 2000 بحث/شهر`);
+        } else {
+          setError('لا توجد نتائج. جرّب كلمات بحث مختلفة.');
+        }
         setResults([]);
-        setError(null);
         return;
       }
 
@@ -226,15 +234,8 @@ export function ResultsView() {
             <p className="text-sm text-destructive">{error}</p>
           </div>
         ) : results.length === 0 && !loading ? (
-          /* No results + not loading — SDK redirect happened */
-          <div className="flex flex-col items-center justify-center py-12 gap-4 text-center">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-              <ExternalLink className="w-7 h-7 text-primary" />
-            </div>
-            <div>
-              <p className="text-sm font-medium">{t("results.redirected") || "تم فتح البحث في تبويب جديد"}</p>
-              <p className="text-xs text-muted-foreground mt-1">DuckDuckGo — بحث آمن ومجهّل</p>
-            </div>
+          <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
+            <p className="text-sm text-muted-foreground">لا توجد نتائج</p>
           </div>
         ) : tab === "images" ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

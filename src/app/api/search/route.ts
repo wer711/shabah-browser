@@ -44,6 +44,50 @@ async function searchSDK(query: string, num: number): Promise<SearchResult[] | n
   }
 }
 
+// ── Brave Search API (free tier — works on Vercel) ──
+async function searchBrave(query: string, num: number): Promise<SearchResult[]> {
+  const apiKey = process.env.BRAVE_API_KEY;
+  if (!apiKey) return [];
+
+  try {
+    const params = new URLSearchParams({
+      q: query,
+      count: String(Math.min(num, 20)),
+    });
+    const res = await fetch(`https://api.search.brave.com/res/v1/web/search?${params}`, {
+      headers: {
+        "Accept": "application/json",
+        "Accept-Encoding": "gzip",
+        "X-Subscription-Token": apiKey,
+      },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!res.ok) {
+      console.error(`[Brave API] ${res.status}`);
+      return [];
+    }
+    const data = await res.json();
+    const webResults = data.web?.results || [];
+    return webResults.map((r: any, i: number) => {
+      const url = r.url || "";
+      let hostName = "";
+      try { hostName = new URL(url).hostname.replace(/^www\./, ""); } catch {}
+      return {
+        url,
+        name: r.title || url,
+        snippet: r.description || "",
+        host_name: hostName,
+        rank: i,
+        date: r.age || "",
+        favicon: r.thumbnail?.src || `https://www.google.com/s2/favicons?domain=${encodeURIComponent(hostName)}&sz=32`,
+      };
+    });
+  } catch (e) {
+    console.error("[Brave search error]", e);
+    return [];
+  }
+}
+
 export async function GET(req: NextRequest) {
   const started = Date.now();
   const sp = req.nextUrl.searchParams;
@@ -65,7 +109,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Try SDK
+    // 1) Try SDK first (local dev)
     const sdkResults = await searchSDK(tab === "news" ? `${q} أخبار اليوم` : tab === "images" ? `${q} صور` : q, num);
     if (sdkResults && sdkResults.length > 0) {
       cache.set(cacheKey, { at: Date.now(), data: sdkResults });
@@ -76,9 +120,22 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // SDK unavailable — return empty with flag so frontend can redirect
+    // 2) Try Brave Search API (Vercel compatible)
+    const braveResults = await searchBrave(tab === "news" ? `${q} news` : q, num);
+    if (braveResults.length > 0) {
+      cache.set(cacheKey, { at: Date.now(), data: braveResults });
+      return NextResponse.json({
+        query: q, tab, cached: false, source: "brave",
+        latencyMs: Date.now() - started,
+        count: braveResults.length, results: braveResults,
+      });
+    }
+
+    // 3) No results
+    const hasBraveKey = !!process.env.BRAVE_API_KEY;
     return NextResponse.json({
-      query: q, tab, cached: false, source: "redirect",
+      query: q, tab, cached: false, source: "none",
+      needsBraveKey: !hasBraveKey,
       latencyMs: Date.now() - started,
       count: 0, results: [],
     });
