@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="onionGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b6ff39"/>
+      <stop offset="100%" stop-color="#6cbf2a"/>
+    </linearGradient>
+    <radialGradient id="onionInner" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.3"/>
+    </radialGradient>
+  </defs>
+  <!-- Onion body -->
+  <ellipse cx="32" cy="34" rx="22" ry="24" fill="url(#onionGrad)"/>
+  <ellipse cx="32" cy="34" rx="22" ry="24" fill="url(#onionInner)"/>
+  <!-- Onion layer lines -->
+  <path d="M 14 34 Q 32 14 50 34" stroke="#1a1a1a" stroke-width="1.5" fill="none" opacity="0.35"/>
+  <path d="M 18 36 Q 32 20 46 36" stroke="#1a1a1a" stroke-width="1.5" fill="none" opacity="0.35"/>
+  <path d="M 22 38 Q 32 26 42 38" stroke="#1a1a1a" stroke-width="1.5" fill="none" opacity="0.35"/>
+  <!-- Sprouts on top -->
+  <path d="M 28 12 Q 26 4 22 2" stroke="#6cbf2a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M 32 10 Q 32 2 30 0" stroke="#6cbf2a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M 36 12 Q 38 4 42 2" stroke="#6cbf2a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Eyes (anonymous mask hint) -->
+  <circle cx="25" cy="32" r="2.5" fill="#0a0a0a"/>
+  <circle cx="39" cy="32" r="2.5" fill="#0a0a0a"/>
+  <!-- Smile (subtle) -->
+  <path d="M 25 40 Q 32 46 39 40" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>
