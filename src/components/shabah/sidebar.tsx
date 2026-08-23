@@ -268,17 +268,15 @@ export function MobileHeader() {
       </header>
 
       {/* Backdrop */}
-      {open && (
-        <div
-          className="md:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Drawer */}
       <div
-        className={`md:hidden fixed inset-y-0 right-0 z-50 w-64 sidebar-transition bg-sidebar text-sidebar-foreground border-l border-sidebar-border shadow-2xl flex flex-col ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} bg-black/50 backdrop-blur-sm`}
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Drawer — slides from the left (same side as the ☰ button) */}
+      <div
+        className={`md:hidden fixed inset-y-0 left-0 z-50 w-64 flex flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border shadow-2xl transition-transform duration-300 ease-out ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
         {/* Drawer header */}
         <div className="flex items-center justify-between p-3 border-b border-sidebar-border h-14">
