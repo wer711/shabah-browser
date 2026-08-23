@@ -10,6 +10,17 @@ export interface Bang {
 }
 
 export const BANGS: Bang[] = [
+  // Short bangs (DuckDuckGo-compatible)
+  { bang: "!w", label: "Wikipedia EN", url: "https://en.wikipedia.org/wiki/{q}", proxied: true, icon: "📖" },
+  { bang: "!wa", label: "ويكيبيديا", url: "https://ar.wikipedia.org/wiki/{q}", proxied: true, icon: "📚" },
+  { bang: "!y", label: "YouTube", url: "https://www.youtube.com/results?search_query={q}", proxied: true, icon: "▶️" },
+  { bang: "!n", label: "أخبار", url: "https://news.google.com/search?q={q}", proxied: true, icon: "📰" },
+  { bang: "!gh", label: "GitHub", url: "https://github.com/search?q={q}", proxied: true, icon: "💻" },
+  { bang: "!so", label: "Stack Overflow", url: "https://stackoverflow.com/search?q={q}", proxied: true, icon: "❓" },
+  { bang: "!r", label: "Reddit", url: "https://www.reddit.com/search/?q={q}", proxied: true, icon: "👽" },
+  { bang: "!hn", label: "Hacker News", url: "https://hn.algolia.com/?q={q}", proxied: true, icon: "🟧" },
+  { bang: "!m", label: "خرائط", url: "https://www.openstreetmap.org/search?query={q}", proxied: true, icon: "🗺️" },
+  // Arabic long bangs
   { bang: "!ويكي", label: "ويكيبيديا", url: "https://ar.wikipedia.org/wiki/{q}", proxied: true, icon: "📚" },
   { bang: "!ويكي-ان", label: "Wikipedia EN", url: "https://en.wikipedia.org/wiki/{q}", proxied: true, icon: "📖" },
   { bang: "!يوتيوب", label: "YouTube", url: "https://www.youtube.com/results?search_query={q}", proxied: true, icon: "▶️" },
