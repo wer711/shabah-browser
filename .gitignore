@@ -50,5 +50,23 @@ test
 prompt
 
 server.log
+
 # Skills directory
 /skills/
+
+# Upload & temp
+tool-results/
+upload/
+
+# Database
+*.db
+/db/
+
+# Mini-services (local dev only)
+/mini-services/
+
+# Caddy config
+Caddyfile
+
+# Worklog (dev only)
+worklog.md
