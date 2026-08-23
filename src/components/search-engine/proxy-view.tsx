@@ -1,340 +1,206 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, startTransition } from "react";
 import {
   ArrowRight,
-  ExternalLink,
-  ShieldCheck,
-  Lock,
-  AlertCircle,
-  Loader2,
   RefreshCw,
-  Menu,
+  Shield,
   X,
   Home,
+  Loader2,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useSearchStore } from "@/store/search-store";
 import { usePrivacyStore } from "@/store/privacy-store";
-import { useAIStore } from "@/store/ai-store";
-import { ShabahLogo } from "@/components/shabah/logo";
-import { ThemeToggle } from "@/components/shabah/theme-toggle";
-import { SessionIdBadge } from "@/components/shabah/session-id";
-import { useSettingsStore } from "@/store/settings-store";
 import { useTranslation } from "@/hooks/use-translation";
 
 export function ProxyView() {
-  const {
-    proxyUrl,
-    proxyTitle,
-    proxyLoading,
-    proxyError,
-    proxyHtml,
-    setProxyLoading,
-    setProxyError,
-    setProxyContent,
-    resetProxy,
-    setView,
-    reset,
-  } = useSearchStore();
-  const { relays, incrementPages, addBytesSaved, rotateCircuit, newIdentity, firewallActive, blockedAttempts, initialized } =
-    usePrivacyStore();
-  const toggleAI = useAIStore((s) => s.togglePanel);
-  const aiOpen = useAIStore((s) => s.panelOpen);
-  const adminMode = useSettingsStore((s) => s.adminMode);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const { proxyUrl, setProxyLoading, resetProxy, setView, reset } =
+    useSearchStore();
+  const incrementPages = usePrivacyStore((s) => s.incrementPages);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(true);
+  const [urlInput, setUrlInput] = useState("");
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyIdx, setHistoryIdx] = useState(-1);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  // Lock body scroll when drawer open
-  useEffect(() => {
-    if (drawerOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [drawerOpen]);
+  const buildSrc = (url: string) => 
+    "/api/proxy-html?" + new URLSearchParams({ url }).toString();
 
-  const fetchProxy = async (url: string) => {
-    if (!url) return;
-    setProxyLoading(true);
-    setProxyError(null);
-    try {
-      const res = await fetch(
-        `/api/proxy?${new URLSearchParams({ url }).toString()}`
-      );
-      if (!res.ok) {
-        const e = await res.json().catch(() => ({}));
-        throw new Error(e.error || `فشل جلب المحتوى (${res.status})`);
+  const navigateTo = useCallback(
+    (url: string, addToHistory = true) => {
+      if (!url) return;
+      let finalUrl = url;
+      if (!/^https?:\/\//i.test(finalUrl)) {
+        finalUrl = "https://www.google.com/search?igu=1&q=" + encodeURIComponent(url);
       }
-      const data = await res.json();
-      setProxyContent(data.html || "", data.title || proxyTitle || url);
-      addBytesSaved((data.bytesSaved as number) || 0);
-    } catch (e) {
-      setProxyError(e instanceof Error ? e.message : "خطأ غير متوقع");
-    } finally {
-      setProxyLoading(false);
-    }
-  };
+      if (addToHistory) {
+        setHistory((prev) => {
+          const h = prev.slice(0, historyIdx + 1);
+          h.push(finalUrl);
+          setHistoryIdx(h.length - 1);
+          return h;
+        });
+      }
+      setUrlInput(finalUrl);
+      setLoading(true);
+      incrementPages();
+    },
+    [historyIdx, incrementPages],
+  );
+
+  const initializedRef = useRef(false);
 
   useEffect(() => {
-    if (proxyUrl && !proxyHtml && !proxyError) {
-      fetchProxy(proxyUrl);
+    if (proxyUrl && !initializedRef.current) {
+      initializedRef.current = true;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      React.startTransition(() => {
+        setHistory([proxyUrl]);
+        setHistoryIdx(0);
+        setUrlInput(proxyUrl);
+        setLoading(true);
+      });
     }
   }, [proxyUrl]);
 
-  useEffect(() => {
-    const el = contentRef.current;
-    if (!el || !proxyHtml) return;
-    const onClick = (e: MouseEvent) => {
-      const a = (e.target as HTMLElement)?.closest("a");
-      if (!a) return;
-      const href = a.getAttribute("href");
-      if (!href) return;
-      if (/^https?:\/\//i.test(href)) {
-        e.preventDefault();
-        incrementPages();
-        useSearchStore.getState().startProxy(href, a.textContent || href);
-      }
-    };
-    el.addEventListener("click", onClick);
-    return () => el.removeEventListener("click", onClick);
-  }, [proxyHtml, incrementPages]);
+  const reload = () => {
+    if (iframeRef.current && urlInput) {
+      setLoading(true);
+      iframeRef.current.src = buildSrc(urlInput);
+    }
+  };
+
+  const goBack = () => {
+    if (historyIdx > 0) {
+      const i = historyIdx - 1;
+      setHistoryIdx(i);
+      setUrlInput(history[i]);
+      setLoading(true);
+    } else {
+      resetProxy();
+    }
+  };
+
+  const goForward = () => {
+    if (historyIdx < history.length - 1) {
+      const i = historyIdx + 1;
+      setHistoryIdx(i);
+      setUrlInput(history[i]);
+      setLoading(true);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigateTo(urlInput.trim());
+  };
 
   let domain = "";
   try {
-    if (proxyUrl) domain = new URL(proxyUrl).hostname.replace(/^www\./, "");
+    if (urlInput) domain = new URL(urlInput).hostname.replace(/^www\./, "");
   } catch {
-    domain = proxyUrl || "";
+    domain = urlInput || "";
   }
 
-  const navItems = [
-    { key: "home", label: t("nav.home"), icon: Home },
-    ...(adminMode ? [{ key: "admin", label: t("nav.admin"), icon: ShieldCheck }] : []),
-  ];
-
-  const handleNav = (key: string) => {
-    if (key === "home") reset();
-    setView(key as never);
-    setDrawerOpen(false);
-  };
-
   return (
-    <main className="flex-1 w-full">
-      {/* Toolbar */}
-      <div className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur-md">
-        <div className="max-w-4xl mx-auto px-3 py-2 flex items-center gap-2">
-          {/* Hamburger — mobile only, since MobileHeader is hidden */}
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+      {/* Browser chrome */}
+      <div className="shrink-0 border-b border-border bg-card/95 backdrop-blur-md">
+        <div className="flex items-center gap-2 h-11 px-2">
           <button
             onClick={() => setDrawerOpen(true)}
-            className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-sidebar-accent text-foreground transition-colors"
-            aria-label="Open menu"
+            className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-foreground transition-colors"
+            aria-label="Menu"
           >
-            <Menu className="w-4.5 h-4.5" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
           </button>
 
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={resetProxy}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <ArrowRight className="w-4 h-4 ml-1" />
-            <span className="hidden sm:inline">{t("proxy.backToResults")}</span>
-          </Button>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 text-xs">
-              <ShieldCheck className="w-3 h-3 text-primary shrink-0" />
-              <code className="text-primary truncate dir-ltr text-[11px]">
-                {relays[2]?.ip}
-              </code>
-              <span className="text-muted-foreground/60 hidden sm:inline text-[10px]">
-                ({relays[2]?.country})
-              </span>
-            </div>
-            <div className="text-[10px] text-muted-foreground truncate mt-0.5 dir-ltr">
-              {domain}
-            </div>
-          </div>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={rotateCircuit}
-            className="text-muted-foreground hover:text-primary"
-            title={t("proxy.rotateTitle")}
-          >
+          <button onClick={goBack} disabled={historyIdx <= 0} className="flex items-center justify-center w-8 h-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:hover:bg-transparent transition-colors">
+            <ArrowRight className="w-4 h-4" />
+          </button>
+          <button onClick={goForward} disabled={historyIdx >= history.length - 1} className="flex items-center justify-center w-8 h-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:hover:bg-transparent transition-colors">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="6" x2="21" y2="6" /><polyline points="15 6 21 12 15 18" /></svg>
+          </button>
+          <button onClick={reload} className="flex items-center justify-center w-8 h-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
             <RefreshCw className="w-3.5 h-3.5" />
-          </Button>
-          <Button asChild size="sm" variant="ghost">
-            <a
-              href={proxyUrl || "#"}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className="text-muted-foreground hover:text-foreground"
-              title={t("proxy.directTitle")}
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </Button>
-        </div>
-      </div>
-
-      {/* Backdrop */}
-      <div
-        className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${drawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} bg-black/50 backdrop-blur-sm`}
-        onClick={() => setDrawerOpen(false)}
-        aria-hidden="true"
-      />
-
-      {/* Drawer — slides from left */}
-      <div
-        className={`md:hidden fixed inset-y-0 left-0 z-50 w-64 flex flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border shadow-2xl transition-transform duration-300 ease-out ${drawerOpen ? "translate-x-0" : "-translate-x-full"}`}
-      >
-        <div className="flex items-center justify-between p-3 border-b border-sidebar-border h-14">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 relative shrink-0">
-              <ShabahLogo size={32} />
-            </div>
-            <div className="min-w-0">
-              <div className="text-sm font-bold leading-none">
-                <span className="text-primary">ش</span>بح
-              </div>
-              <div className="text-[9px] text-muted-foreground font-mono mt-0.5 dir-ltr">
-                PRIVATE
-              </div>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setDrawerOpen(false)}
-            className="h-7 w-7 text-muted-foreground hover:text-foreground"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
-        <nav className="flex-1 overflow-y-auto p-2 space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.key}
-                onClick={() => handleNav(item.key)}
-                className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-              >
-                <Icon className="w-4.5 h-4.5 shrink-0" />
-                <span className="truncate">{item.label}</span>
-              </button>
-            );
-          })}
-          <button
-            onClick={() => { newIdentity(); setDrawerOpen(false); }}
-            className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          >
-            <RefreshCw className="w-4.5 h-4.5 shrink-0" />
-            <span className="truncate">{t("nav.newIdentity")}</span>
           </button>
-        </nav>
-        <div className="border-t border-sidebar-border p-2 space-y-1">
-          <div className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs ${firewallActive ? "text-primary" : "text-amber-500"}`}>
-            <ShieldCheck className="w-3 h-3" />
-            <span className="flex-1">
-              {firewallActive ? t("footer.firewallActive") : t("footer.firewallDisabled")}
-            </span>
-            {firewallActive && initialized && (
-              <span className="text-[10px] bg-primary/15 px-1.5 py-0.5 rounded-full">
-                {blockedAttempts}
-              </span>
-            )}
-          </div>
-          {initialized && <SessionIdBadge compact />}
-          <div className="flex justify-end">
-            <ThemeToggle />
-          </div>
-        </div>
-      </div>
+          <Shield className="w-3.5 h-3.5 text-primary/60 shrink-0" />
 
-      {/* Privacy banner */}
-      <div className="max-w-4xl mx-auto px-4 pt-4">
-        <div className="rounded-xl border border-primary/30 bg-primary/5 px-3 py-2.5 flex items-start gap-2.5">
-          <Lock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-          <div className="text-xs leading-relaxed">
-            <span className="text-primary font-semibold">{t("proxy.privacyBanner")}</span>{" "}
-            {t("proxy.privacyDesc")}
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 py-5">
-        {proxyLoading ? (
-          <ProxySkeleton domain={domain} />
-        ) : proxyError ? (
-          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-8 text-center">
-            <AlertCircle className="w-8 h-8 text-destructive mx-auto mb-3" />
-            <p className="text-sm font-medium mb-1">{t("proxy.fetchFailed")}</p>
-            <p className="text-xs text-muted-foreground mb-4">{proxyError}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => proxyUrl && fetchProxy(proxyUrl)}
-            >
-              <RefreshCw className="w-3.5 h-3.5 ml-1.5" />
-              {t("proxy.retry")}
-            </Button>
-          </div>
-        ) : proxyHtml ? (
-          <article className="rounded-xl border border-border bg-card/40 p-5 sm:p-7">
-            <h1 className="text-xl sm:text-2xl font-bold mb-4 text-foreground">
-              {proxyTitle}
-            </h1>
-            <div
-              ref={contentRef}
-              className="proxy-content text-sm"
-              dir="auto"
-              dangerouslySetInnerHTML={{ __html: proxyHtml }}
+          <form onSubmit={handleSubmit} className="flex-1 min-w-0">
+            <input
+              type="text"
+              value={urlInput}
+              onChange={(e) => setUrlInput(e.target.value)}
+              className="w-full h-8 px-3 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/40 transition-all dir-ltr text-left"
+              dir="ltr"
+              spellCheck={false}
+              autoComplete="off"
             />
-          </article>
-        ) : (
-          <div className="rounded-xl border border-border bg-card/40 p-8 text-center text-sm text-muted-foreground">
-            {t("proxy.noContent")}
+          </form>
+
+          <button onClick={resetProxy} className="flex items-center justify-center w-8 h-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        {loading && (
+          <div className="h-0.5 bg-primary/20 overflow-hidden">
+            <div className="h-full bg-primary browser-loading-bar" />
           </div>
         )}
       </div>
-    </main>
-  );
-}
 
-function ProxySkeleton({ domain }: { domain: string }) {
-  const { t } = useTranslation();
-  return (
-    <div className="rounded-xl border border-border bg-card/40 p-5 sm:p-7">
-      <div className="flex items-center gap-2 text-xs text-primary mb-4">
-        <Loader2 className="w-4 h-4 animate-spin" />
-        <span>
-          {t("proxy.routingProgress")}
-        </span>
+      {/* Iframe */}
+      <div className="flex-1 relative bg-white">
+        {urlInput ? (
+          <iframe
+            ref={iframeRef}
+            src={buildSrc(urlInput)}
+            className="w-full h-full border-0"
+            sandbox="allow-same-origin allow-forms allow-popups"
+            onLoad={() => setLoading(false)}
+            title={domain}
+          />
+        ) : null}
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-card/80 backdrop-blur-sm">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+              <span className="text-sm text-muted-foreground">جارٍ التحميل...</span>
+            </div>
+          </div>
+        )}
       </div>
-      <div className="flex items-center gap-2 mb-3">
-        <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">
-          {t("proxy.destination")}
-        </Badge>
-        <code className="text-xs text-muted-foreground dir-ltr truncate">
-          {domain}
-        </code>
-      </div>
-      <div className="space-y-3 animate-pulse">
-        <div className="h-6 w-3/4 bg-muted/60 rounded" />
-        <div className="h-3 w-full bg-muted/50 rounded" />
-        <div className="h-3 w-5/6 bg-muted/50 rounded" />
-        <div className="h-3 w-full bg-muted/50 rounded" />
-        <div className="h-3 w-2/3 bg-muted/50 rounded" />
-        <div className="h-24 w-full bg-muted/30 rounded mt-4" />
-        <div className="h-3 w-full bg-muted/50 rounded" />
-        <div className="h-3 w-4/5 bg-muted/50 rounded" />
-        <div className="h-3 w-5/6 bg-muted/50 rounded" />
+
+      {/* Mobile drawer backdrop */}
+      <div
+        className={["md:hidden fixed inset-0 z-50 transition-opacity duration-300", drawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none", "bg-black/50 backdrop-blur-sm"].join(" ")}
+        onClick={() => setDrawerOpen(false)}
+      />
+
+      {/* Mobile drawer */}
+      <div
+        className={["md:hidden fixed inset-y-0 left-0 z-50 w-56 flex flex-col bg-card border-r border-border shadow-2xl transition-transform duration-300 ease-out", drawerOpen ? "translate-x-0" : "-translate-x-full"].join(" ")}
+      >
+        <div className="flex items-center justify-between p-3 border-b border-border h-12">
+          <span className="text-sm font-bold text-primary">شبح</span>
+          <button onClick={() => setDrawerOpen(false)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-accent">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        <nav className="flex-1 p-2 space-y-1">
+          <button onClick={() => { reset(); setDrawerOpen(false); }} className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground/80 hover:bg-accent transition-colors">
+            <Home className="w-4 h-4" />
+            <span>{t("nav.home")}</span>
+          </button>
+          <button onClick={() => { resetProxy(); setDrawerOpen(false); }} className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground/80 hover:bg-accent transition-colors">
+            <ArrowRight className="w-4 h-4" />
+            <span>{t("proxy.backToResults")}</span>
+          </button>
+        </nav>
       </div>
     </div>
   );

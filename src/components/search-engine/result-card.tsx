@@ -1,21 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import {
-  ShieldOff,
-  EyeOff,
-  ExternalLink,
-  Globe,
-  Clock,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Globe, Clock, ImageOff } from "lucide-react";
 import type { SearchResultItem } from "@/store/search-store";
 import { useSearchStore } from "@/store/search-store";
 import { usePrivacyStore } from "@/store/privacy-store";
-import { useAIStore } from "@/store/ai-store";
-import { PrivacyGrade } from "@/components/shabah/privacy-grade";
-import { useTranslation } from "@/hooks/use-translation";
 
 interface ResultCardProps {
   item: SearchResultItem;
@@ -30,140 +19,123 @@ function getDomain(url: string) {
   }
 }
 
-function faviconFor(item: SearchResultItem) {
+function getPath(url: string) {
+  try {
+    const u = new URL(url);
+    const p = u.pathname + u.search;
+    return p.length > 60 ? p.slice(0, 57) + "…" : p;
+  } catch {
+    return url;
+  }
+}
+
+function faviconUrl(item: SearchResultItem) {
   if (item.favicon) return item.favicon;
   const host = getDomain(item.url);
-  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64`;
+  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=32`;
 }
 
 export function ResultCard({ item }: ResultCardProps) {
   const { startProxy } = useSearchStore();
-  const openAIContext = useAIStore((s) => s.openWithContext);
-  const toggleAI = useAIStore((s) => s.togglePanel);
   const incrementPages = usePrivacyStore((s) => s.incrementPages);
-  const addBytesSaved = usePrivacyStore((s) => s.addBytesSaved);
   const [imgError, setImgError] = useState(false);
-  const { t } = useTranslation();
 
   const domain = getDomain(item.url);
-  const anonProxy = () => {
+  const path = getPath(item.url);
+
+  const openResult = () => {
     incrementPages();
-    addBytesSaved(180 * 1024);
     startProxy(item.url, item.name);
-  };
-  const summarize = () => {
-    openAIContext(item.url, item.name);
-    toggleAI(true);
   };
 
   return (
-    <article className="group rounded-xl border border-border bg-card/40 hover:bg-card/70 hover:border-primary/30 transition-colors p-4">
-      <div className="flex items-start gap-3">
-        <div className="shrink-0 w-8 h-8 rounded-lg overflow-hidden bg-background/60 border border-border flex items-center justify-center">
+    <div className="group/py-[var(--result-gap,8px)] py-[var(--result-gap,8px)]">
+      <div className="flex items-center gap-2 mb-0.5">
+        <div className="w-5 h-5 shrink-0 rounded-sm overflow-hidden bg-transparent flex items-center justify-center">
           {!imgError ? (
             <img
-              src={faviconFor(item)}
+              src={faviconUrl(item)}
               alt=""
+              width={20}
+              height={20}
               className="w-5 h-5 object-contain"
               onError={() => setImgError(true)}
             />
           ) : (
-            <Globe className="w-4 h-4 text-muted-foreground" />
+            <Globe className="w-3.5 h-3.5 text-muted-foreground/50" />
           )}
         </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-            <span className="truncate dir-ltr">{domain}</span>
-            <PrivacyGrade url={item.url} />
-            {item.date && item.date !== "N/A" && (
-              <>
-                <span className="text-muted-foreground/40">•</span>
-                <span className="inline-flex items-center gap-1 whitespace-nowrap">
-                  <Clock className="w-3 h-3" />
-                  {item.date}
-                </span>
-              </>
-            )}
-          </div>
-
-          <h3 className="mt-0.5 font-semibold text-base leading-snug">
-            <button
-              onClick={anonProxy}
-              title={t("result.anonTitle")}
-              className="text-right text-foreground hover:text-primary transition-colors"
-            >
-              {item.name || domain}
-            </button>
-          </h3>
-
-          {item.snippet && (
-            <p className="mt-1 text-sm text-muted-foreground leading-relaxed line-clamp-3">
-              {item.snippet}
-            </p>
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground min-w-0">
+          <span className="truncate dir-ltr">{domain}</span>
+          <span className="text-muted-foreground/30 hidden sm:inline">·</span>
+          <span className="truncate dir-ltr text-muted-foreground/60 hidden sm:inline">{path}</span>
+          {item.date && item.date !== "N/A" && (
+            <>
+              <span className="text-muted-foreground/30">·</span>
+              <span className="inline-flex items-center gap-0.5 whitespace-nowrap">
+                <Clock className="w-2.5 h-2.5" />
+                {item.date}
+              </span>
+            </>
           )}
-
-          <div className="mt-2.5 flex items-center gap-2 flex-wrap">
-            <Button
-              size="sm"
-              onClick={anonProxy}
-              className="h-8 bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              <ShieldOff className="w-3.5 h-3.5 ml-1.5" />
-              {t("result.anonBrowse")}
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={summarize}
-              className="h-8 border-border hover:border-primary/40"
-              title={t("result.summarizeTitle")}
-            >
-              <EyeOff className="w-3.5 h-3.5 ml-1.5" />
-              {t("result.summarize")}
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              asChild
-              className="h-8 text-muted-foreground"
-            >
-              <a href={item.url} target="_blank" rel="noopener noreferrer nofollow">
-                <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                {t("result.direct")}
-              </a>
-            </Button>
-            <Badge
-              variant="outline"
-              className="h-8 border-primary/30 text-primary/80 gap-1 text-[10px]"
-              title="يُجلب المحتوى عبر الخادم — IP الحقيقي لا يصل للموقع"
-            >
-              <EyeOff className="w-3 h-3" />
-              {t("result.ipHidden")}
-            </Badge>
-          </div>
         </div>
       </div>
-    </article>
+
+      <button
+        onClick={openResult}
+        className="text-left w-full text-right"
+      >
+        <h3 className="text-[17px] sm:text-[20px] font-normal leading-snug text-[#8ab4f8] hover:underline cursor-pointer">
+          {item.name || domain}
+        </h3>
+      </button>
+
+      {item.snippet && (
+        <p className="mt-0.5 text-sm text-muted-foreground leading-relaxed line-clamp-2">
+          {item.snippet}
+        </p>
+      )}
+    </div>
+  );
+}
+
+export function ImageResultCard({ item }: ResultCardProps) {
+  const { startProxy } = useSearchStore();
+  const incrementPages = usePrivacyStore((s) => s.incrementPages);
+
+  const openResult = () => {
+    incrementPages();
+    startProxy(item.url, item.name);
+  };
+
+  return (
+    <button
+      onClick={openResult}
+      className="group text-left rounded-xl border border-border bg-card/40 overflow-hidden hover:border-primary/40 transition-colors"
+    >
+      <div className="aspect-[4/3] bg-muted/30 flex items-center justify-center">
+        <ImageOff className="w-8 h-8 text-muted-foreground/30" />
+      </div>
+      <div className="p-2">
+        <div className="text-xs font-medium line-clamp-1">{item.name}</div>
+        <div className="text-[10px] text-muted-foreground line-clamp-1 dir-ltr">
+          {item.host_name}
+        </div>
+      </div>
+    </button>
   );
 }
 
 export function ResultSkeleton() {
   return (
-    <div className="rounded-xl border border-border bg-card/30 p-4 animate-pulse">
-      <div className="flex items-start gap-3">
-        <div className="w-8 h-8 rounded-lg bg-muted" />
-        <div className="flex-1 space-y-2">
-          <div className="h-3 w-32 bg-muted rounded" />
-          <div className="h-5 w-3/4 bg-muted/70 rounded" />
-          <div className="h-3 w-full bg-muted/50 rounded" />
-          <div className="h-3 w-5/6 bg-muted/50 rounded" />
-          <div className="flex gap-2 mt-2">
-            <div className="h-8 w-28 bg-primary/20 rounded" />
-            <div className="h-8 w-24 bg-muted rounded" />
-          </div>
-        </div>
+    <div className="py-2 animate-pulse">
+      <div className="flex items-center gap-2 mb-1">
+        <div className="w-5 h-5 rounded-sm bg-muted" />
+        <div className="h-3 w-40 bg-muted rounded" />
       </div>
+      <div className="h-5 w-3/4 bg-muted/70 rounded mt-1" />
+      <div className="h-3.5 w-full bg-muted/40 rounded mt-1.5" />
+      <div className="h-3.5 w-2/3 bg-muted/30 rounded mt-1" />
     </div>
   );
 }

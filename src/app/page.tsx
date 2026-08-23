@@ -30,27 +30,28 @@ function AppShell() {
     initialize();
   }
 
-  const renderView = () => {
-    switch (view) {
-      case 'home': return <HomeScreen />;
-      case 'results': return <ResultsView />;
-      case 'proxy': return <ProxyView />;
-      case 'settings': return <SettingsView />;
-      case 'admin': return <AdminDashboard />;
-      default: return <HomeScreen />;
-    }
-  };
-
-  // Hide MobileHeader when browsing (proxy view) to maximize screen space
-  const showMobileHeader = view !== 'proxy';
+  // Full-screen browser mode — no sidebar, no footer, no mobile header
+  if (view === 'proxy') {
+    return (
+      <>
+        <SettingsSync />
+        <ProxyView />
+      </>
+    );
+  }
 
   return (
     <div className="flex h-dvh overflow-hidden">
       <SettingsSync />
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {showMobileHeader && <MobileHeader />}
-        <div className="flex-1 overflow-y-auto">{renderView()}</div>
+        <MobileHeader />
+        <div className="flex-1 overflow-y-auto">
+          {view === 'home' && <HomeScreen />}
+          {view === 'results' && <ResultsView />}
+          {view === 'settings' && <SettingsView />}
+          {view === 'admin' && <AdminDashboard />}
+        </div>
         <Footer />
       </div>
       <AiPanel />

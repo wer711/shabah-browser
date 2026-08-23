@@ -39,7 +39,7 @@ const ar: Record<string, string> = {
   "home.tagline": "تصفّح بدون أثر",
 
   // Search bar
-  "search.placeholder": "ابحث بأمان — عنوانك مخفي عبر 3 عُقد...",
+  "search.placeholder": "ابحث في الويب أو أدخُل رابطًا...",
   "search.placeholderOffline": "اكتب استعلام البحث...",
   "search.clear": "مسح",
   "search.button": "بحث",
@@ -53,6 +53,7 @@ const ar: Record<string, string> = {
   "results.tabNews": "أخبار",
   "results.tabImages": "صور",
   "results.noResults": "لا توجد نتائج مطابقة. جرّب كلمات مفتاحية أخرى.",
+  "results.loadingMore": "جارٍ تحميل المزيد...",
   "results.infoTitle": "معلومة",
   "results.infoText": "اضغط «تصفّح مجهّل» لفتح أي نتيجة عبر البروكسي. اضغط «لخّص بـ AI» لطلب موجز من شبح AI. لن يرى الموقع عنوانك — فقط عنوان عقدة الخروج.",
 
@@ -303,12 +304,12 @@ const en: Record<string, string> = {
   "home.tagline": "Browse without a trace",
 
   // Search bar
-  "search.placeholder": "Search safely — your address is hidden via 3 nodes...",
-  "search.placeholderOffline": "Enter your search query...",
-  "search.clear": "Clear",
-  "search.button": "Search",
-  "search.label": "Anonymous search field",
-  "search.recentTitle": "Recent searches (local only — not logged)",
+  "search.placeholder": "ابحث في الويب أو أدخُل رابطًا...",
+  "search.placeholderOffline": "اكتب استعلام البحث...",
+  "search.clear": "مسح",
+  "search.button": "بحث",
+  "search.label": "حقل البحث",
+  "search.recentTitle": "آخر عمليات البحث (محلي فقط)",
 
   // Results view
   "results.routing": "Routing through nodes...",
@@ -317,6 +318,7 @@ const en: Record<string, string> = {
   "results.tabNews": "News",
   "results.tabImages": "Images",
   "results.noResults": "No matching results. Try different keywords.",
+  "results.loadingMore": "Loading more...",
   "results.infoTitle": "Info",
   "results.infoText": "Click «Browse Anonymously» to open any result via proxy. Click «Summarize with AI» to request a summary from Shabah AI. The site won't see your address — only the exit node's address.",
 

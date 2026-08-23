@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const q = sp.get("q")?.trim();
   const tab = (sp.get("tab") as "web" | "news" | "images") || "web";
-  const num = Math.min(parseInt(sp.get("num") || "12", 10) || 12, 20);
+  const num = parseInt(sp.get("num") || "20", 10) || 20;
   const recencyDays = sp.get("recency_days")
     ? parseInt(sp.get("recency_days") as string, 10)
     : undefined;

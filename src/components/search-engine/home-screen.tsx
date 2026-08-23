@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ShieldCheck,
   EyeOff,
   Lock,
   Bot,
@@ -33,14 +32,12 @@ const SPEED_DIAL = [
 ];
 
 export function HomeScreen() {
-  const { connected, relays, visibleIp, firewallActive } = usePrivacyStore();
-  const initialized = usePrivacyStore((s) => s.initialized);
+  const { startProxy } = useSearchStore();
   const setQuery = useSearchStore((s) => s.setQuery);
   const setView = useSearchStore((s) => s.setView);
   const setResults = useSearchStore((s) => s.setResults);
   const setError = useSearchStore((s) => s.setError);
   const setSummary = useSearchStore((s) => s.setSummary);
-  const startProxy = useSearchStore((s) => s.startProxy);
   const openAIContext = useAIStore((s) => s.openWithContext);
   const toggleAI = useAIStore((s) => s.togglePanel);
   const { t, lang } = useTranslation();
@@ -54,55 +51,31 @@ export function HomeScreen() {
     window.dispatchEvent(new CustomEvent("onionsearch:submit", { detail: text }));
   };
 
-  const exitRelay = relays.length >= 3 ? relays[2] : null;
-
   return (
-    <main className="flex-1 w-full scroll-mt-0 pb-8">
-      {/* HERO */}
-      <section className="grid-bg relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none opacity-[0.06]">
-          <Ghosts />
-        </div>
-        <div className="max-w-5xl mx-auto px-4 pt-12 pb-8 sm:pt-16 sm:pb-12 text-center relative">
-          {/* Logo */}
-          <div className="flex justify-center mb-3">
-            <div className="w-20 h-20">
-              <ShabahLogo size={80} float />
+    <main className="flex-1 w-full pb-8">
+      {/* HERO — Clean, Google-like */}
+      <section className="relative overflow-hidden">
+        <div className="max-w-2xl mx-auto px-4 pt-16 sm:pt-24 pb-6 text-center">
+          {/* Logo + Title */}
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 sm:w-20 sm:h-20">
+              <ShabahLogo size={80} />
             </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-            <span className="glow-text text-primary">ش</span>بح
-            <span className="text-sm sm:text-base font-normal text-muted-foreground/80 mr-2 sm:mr-3">· {t("home.tagline")}</span>
+          <h1 className="text-3xl sm:text-4xl font-normal tracking-tight text-foreground">
+            <span className="glow-text text-primary font-medium">ش</span>بح
           </h1>
-
-          {/* Status pill */}
-          {initialized && (
-            <div className="mt-4 flex items-center justify-center">
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/5 px-2.5 py-1 text-[11px]">
-                <span className="relative flex w-1.5 h-1.5">
-                  <span className="absolute inline-flex w-full h-full rounded-full bg-primary opacity-60 pulse-ring" />
-                  <span className="relative inline-flex w-1.5 h-1.5 rounded-full bg-primary" />
-                </span>
-                <span className="text-primary font-medium">{t("home.connected")}</span>
-                <span className="text-muted-foreground">
-                  {relays.length} {t("home.nodes", { count: relays.length })} · {t("home.exit")} {exitRelay?.country || "—"}
-                </span>
-                <span className="text-muted-foreground/40">|</span>
-                <code className="text-muted-foreground dir-ltr text-[10px]">{visibleIp}</code>
-              </div>
-            </div>
-          )}
+          <p className="text-sm text-muted-foreground/70 mt-1">{t("home.tagline")}</p>
 
           {/* Search bar */}
-          <div className="mt-6 max-w-2xl mx-auto relative overflow-hidden">
+          <div className="mt-8 max-w-xl mx-auto relative overflow-hidden">
             <SearchBar variant="hero" autoFocus />
           </div>
         </div>
       </section>
 
       {/* Speed-dial grid */}
-      <section className="max-w-5xl mx-auto px-4 pt-10 pb-10">
-        <h2 className="text-xs font-medium text-muted-foreground/70 mb-4">{t("home.quickLaunch")}</h2>
+      <section className="max-w-2xl mx-auto px-4 pt-6 pb-6">
         <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
           {SPEED_DIAL.map((site, i) => (
             <button
@@ -122,75 +95,44 @@ export function HomeScreen() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="max-w-5xl mx-auto px-4 py-10 sm:py-14">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {/* Features — subtle, below the fold */}
+      <section className="max-w-2xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {FEATURES.map((f) => {
             const Icon = f.icon;
             return (
-              <div key={f.key} className="rounded-2xl border border-border bg-card/40 backdrop-blur p-4 sm:p-5 hover:border-primary/40 transition-colors">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
-                  <Icon className="w-5 h-5" />
+              <div key={f.key} className="rounded-2xl border border-border/60 bg-card/30 p-4 hover:border-primary/30 transition-colors">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2.5">
+                  <Icon className="w-4 h-4" />
                 </div>
-                <h3 className="text-xs sm:text-sm font-semibold mb-1.5">{t(`home.feature_${f.key}_title`)}</h3>
-                <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
+                <h3 className="text-xs font-semibold mb-1">{t(`home.feature_${f.key}_title`)}</h3>
+                <p className="text-[10px] text-muted-foreground/70 leading-relaxed">
                   {t(`home.feature_${f.key}_desc`)}
                 </p>
               </div>
             );
           })}
         </div>
-      </section>
 
-      {/* AI CTA + Privacy promise */}
-      <section className="max-w-5xl mx-auto px-4 pt-10 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-transparent p-5 flex flex-col">
-          <div className="flex items-center gap-2.5 mb-3">
-            <div className="w-9 h-9 rounded-lg bg-primary/15 text-primary flex items-center justify-center">
-              <Bot className="w-5 h-5" />
+        {/* AI CTA */}
+        <div className="mt-4 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-4 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <Bot className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold">{t("home.aiTitle")}</h3>
+              <p className="text-xs font-semibold">{t("home.aiTitle")}</p>
               <p className="text-[10px] text-muted-foreground">{t("home.aiSubtitle")}</p>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed flex-1 mb-3">{t("home.aiDesc")}</p>
           <button
             onClick={() => { openAIContext("", t("home.aiChatContext")); toggleAI(true); }}
-            className="self-start rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium px-3 py-1.5 transition-colors"
+            className="rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium px-3 py-1.5 transition-colors"
           >
             {t("home.aiChat")}
           </button>
         </div>
-        <div className="rounded-2xl border border-border bg-card/40 p-5 flex flex-col">
-          <div className="flex items-center gap-2.5 mb-3">
-            <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold">{t("home.zeroDataTitle")}</h3>
-              <p className="text-[10px] text-muted-foreground">{t("home.zeroDataSubtitle")}</p>
-            </div>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed flex-1">{t("home.zeroDataDesc")}</p>
-        </div>
       </section>
     </main>
-  );
-}
-
-function Ghosts() {
-  return (
-    <>
-      <div className="absolute top-10 right-10 w-20 h-20 opacity-40 ghost-float">
-        <div className="w-full h-full rounded-t-2xl rounded-br-2xl rounded-bl-2xl bg-primary" />
-      </div>
-      <div className="absolute top-32 left-20 w-12 h-12 opacity-30 ghost-float" style={{ animationDelay: "1s" }}>
-        <div className="w-full h-full rounded-t-2xl rounded-br-2xl rounded-bl-2xl bg-primary" />
-      </div>
-      <div className="absolute bottom-20 right-1/3 w-16 h-16 opacity-25 ghost-float" style={{ animationDelay: "2s" }}>
-        <div className="w-full h-full rounded-t-2xl rounded-br-2xl rounded-bl-2xl bg-primary" />
-      </div>
-    </>
   );
 }
