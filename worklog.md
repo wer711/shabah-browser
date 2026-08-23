@@ -125,3 +125,19 @@ Stage Summary:
 - Navigation unified into sidebar: desktop shows persistent sidebar (md+), mobile shows drawer via hamburger menu (< md)
 - All sticky headers properly offset for mobile header height (48px / top-12)
 - Full responsive design verified across mobile and desktop
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Improve search bar design + add tagline
+
+Work Log:
+- Rewrote search-bar.tsx: glass container with animated gradient glow ring on focus, smooth scale transition, refined icon/btn styling with hover states
+- Added i18n keys: home.tagline (ar: "تصفّح بدون أثر", en: "Browse without a trace")
+- Updated home-screen.tsx: tagline now appears inline with the title as "شبح · تصفّح بدون أثر"
+- Removed unused imports (Input, Button) from search-bar.tsx, using native elements for cleaner control
+- Verified on mobile (iPhone 14) and desktop (1440x900) - tagline and search bar render correctly
+
+Stage Summary:
+- Search bar now has: animated gradient glow border on focus, glass morphism backdrop, smooth scale, refined shield icon with scale animation, polished submit button with shadow
+- Tagline "شبح · تصفّح بدون أثر" shows beside the title, translatable via i18n

@@ -35,6 +35,9 @@ const ar: Record<string, string> = {
   "site.zeroLogs": "صفر سجلّات",
   "site.homePage": "الصفحة الرئيسية",
 
+  // Home tagline
+  "home.tagline": "تصفّح بدون أثر",
+
   // Search bar
   "search.placeholder": "ابحث بأمان — عنوانك مخفي عبر 3 عُقد...",
   "search.placeholderOffline": "اكتب استعلام البحث...",
@@ -295,6 +298,9 @@ const en: Record<string, string> = {
   "site.firewallDisabled": "Off",
   "site.zeroLogs": "Zero Logs",
   "site.homePage": "Home",
+
+  // Home tagline
+  "home.tagline": "Browse without a trace",
 
   // Search bar
   "search.placeholder": "Search safely — your address is hidden via 3 nodes...",

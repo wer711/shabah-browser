@@ -2,8 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Search, X, ShieldCheck } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useSearchStore } from "@/store/search-store";
 import { usePrivacyStore } from "@/store/privacy-store";
 import { useTranslation } from "@/hooks/use-translation";
@@ -38,37 +36,90 @@ export function SearchBar({ variant = "hero", autoFocus = false }: SearchBarProp
   const onKeyDown = (e: React.KeyboardEvent) => { if (e.key === "Enter") submit(); };
   const isHero = variant === "hero";
 
+  const containerClass = [
+    "relative flex items-center gap-2 rounded-2xl backdrop-blur-xl border transition-colors duration-300",
+    isHero ? "bg-card/60 border-border/80 p-1.5 pl-2" : "bg-card/80 border-border p-1 pl-2",
+    focused ? "border-primary/40 shadow-lg shadow-primary/5" : "hover:border-border",
+  ].join(" ");
+
+  const iconClass = [
+    "flex items-center justify-center rounded-xl shrink-0 transition-all duration-300",
+    isHero ? "w-11 h-11" : "w-8 h-8",
+    focused
+      ? "bg-primary/20 text-primary"
+      : "bg-primary/10 text-primary/70 group-hover:bg-primary/15 group-hover:text-primary",
+  ].join(" ");
+
+  const btnClass = [
+    "shrink-0 flex items-center gap-1.5 rounded-xl text-primary-foreground font-medium transition-all duration-300",
+    isHero ? "h-11 px-5 text-sm" : "h-8 px-3.5 text-xs",
+    focused
+      ? "bg-primary hover:bg-primary/90 shadow-md shadow-primary/25"
+      : "bg-primary/80 hover:bg-primary",
+  ].join(" ");
+
+  const inputClass = [
+    "flex-1 bg-transparent border-0 outline-none placeholder:text-muted-foreground text-foreground",
+    isHero ? "h-12 px-2 text-base sm:text-lg" : "h-9 px-1.5 text-sm",
+  ].join(" ");
+
+  const clearClass = [
+    "shrink-0 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground transition-colors",
+    isHero ? "w-9 h-9" : "w-7 h-7",
+  ].join(" ");
+
   return (
     <div className="w-full">
-      <div className={`relative group ${focused ? "scale-[1.01]" : ""} transition-transform`}>
-        <div className={`absolute -inset-[1.5px] rounded-2xl opacity-0 transition-opacity duration-300 ${focused ? "opacity-100" : ""} animated-border blur-[1px]`} aria-hidden />
-        <div className={`relative flex items-center gap-2 rounded-2xl bg-card/80 backdrop-blur border ${focused ? "border-primary/50" : "border-border"} ${isHero ? "p-2 pl-3" : "p-1.5 pl-2.5"}`}>
-          <div className={`flex items-center justify-center rounded-full bg-primary/15 text-primary shrink-0 ${isHero ? "w-10 h-10" : "w-8 h-8"}`}>
-            <ShieldCheck className={isHero ? "w-5 h-5" : "w-4 h-4"} />
+      <div className={`relative group transition-all duration-300 ${focused ? (isHero ? "scale-[1.02]" : "scale-[1.01]") : ""}`}>
+        {/* Animated glow ring */}
+        <div
+          className={`absolute -inset-[2px] rounded-2xl transition-opacity duration-500 ${focused ? "opacity-100" : "opacity-0"}`}
+          style={{
+            background: focused
+              ? "linear-gradient(135deg, var(--primary) 0%, oklch(0.55 0.2 250) 50%, var(--primary) 100%)"
+              : "transparent",
+            backgroundSize: "200% 200%",
+            animation: focused ? "border-flow 3s ease infinite" : "none",
+          }}
+          aria-hidden
+        />
+
+        {/* Glass container */}
+        <div className={containerClass}>
+          {/* Shield icon */}
+          <div className={iconClass}>
+            <ShieldCheck className={`transition-transform duration-300 ${isHero ? "w-5 h-5" : "w-4 h-4"} ${focused ? "scale-110" : ""}`} />
           </div>
-          <Input
+
+          {/* Input */}
+          <input
             ref={inputRef} type="text" inputMode="search"
             value={local} onChange={(e) => setLocal(e.target.value)}
             onKeyDown={onKeyDown}
             onFocus={() => setFocused(true)}
             onBlur={() => setTimeout(() => setFocused(false), 150)}
             placeholder={connected ? t("search.placeholder") : t("search.placeholderOffline")}
-            className={`flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-1 text-foreground placeholder:text-muted-foreground ${isHero ? "h-12 text-lg" : "h-9 text-base"}`}
+            className={inputClass}
             aria-label={t("search.label")}
           />
+
+          {/* Clear button */}
           {local && (
-            <Button size="icon" variant="ghost" type="button"
+            <button
+              type="button"
               onClick={() => { setLocal(""); setQuery(""); inputRef.current?.focus(); }}
-              className="shrink-0 text-muted-foreground hover:text-foreground"
-              aria-label={t("search.clear")}>
-              <X className="w-4 h-4" />
-            </Button>
+              className={clearClass}
+              aria-label={t("search.clear")}
+            >
+              <X className={isHero ? "w-4.5 h-4.5" : "w-3.5 h-3.5"} />
+            </button>
           )}
-          <Button type="button" onClick={() => submit()}
-            className={`shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 ${isHero ? "h-12 px-6 text-base" : "h-9 px-4"}`}>
-            <Search className="w-4 h-4 ml-1.5" />
+
+          {/* Submit button */}
+          <button type="button" onClick={() => submit()} className={btnClass}>
+            <Search className={isHero ? "w-4 h-4" : "w-3.5 h-3.5"} />
             {t("search.button")}
-          </Button>
+          </button>
         </div>
       </div>
     </div>

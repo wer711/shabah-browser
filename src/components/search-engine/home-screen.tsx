@@ -72,6 +72,7 @@ export function HomeScreen() {
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
             <span className="glow-text text-primary">ش</span>بح
+            <span className="text-base sm:text-lg font-normal text-muted-foreground/80 mr-2 sm:mr-3">· {t("home.tagline")}</span>
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-muted-foreground font-mono dir-ltr tracking-widest">
             SHABAH · PRIVATE BROWSER
