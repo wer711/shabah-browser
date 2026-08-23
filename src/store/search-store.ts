@@ -24,7 +24,7 @@ interface SearchState {
   results: SearchResultItem[];
   loading: boolean;
   error: string | null;
-  summary: string | null; // AI summary block
+  summary: string | null;
   summarySources: { title: string; url: string }[];
   summaryLoading: boolean;
 
@@ -34,8 +34,6 @@ interface SearchState {
   proxyError: string | null;
   proxyHtml: string | null;
   proxyPublishedTime: string | null;
-
-  history: string[];
 
   setView: (v: View) => void;
   setQuery: (q: string) => void;
@@ -56,8 +54,6 @@ interface SearchState {
   ) => void;
   resetProxy: () => void;
 
-  addHistory: (q: string) => void;
-  clearHistory: () => void;
   reset: () => void;
 }
 
@@ -78,8 +74,6 @@ export const useSearchStore = create<SearchState>((set) => ({
   proxyError: null,
   proxyHtml: null,
   proxyPublishedTime: null,
-
-  history: [],
 
   setView: (v) => set({ view: v }),
   setQuery: (q) => set({ query: q }),
@@ -121,11 +115,6 @@ export const useSearchStore = create<SearchState>((set) => ({
       proxyPublishedTime: null,
     }),
 
-  addHistory: (q) =>
-    set((s) => ({
-      history: [q, ...s.history.filter((h) => h !== q)].slice(0, 20),
-    })),
-  clearHistory: () => set({ history: [] }),
   reset: () =>
     set({
       view: "home",

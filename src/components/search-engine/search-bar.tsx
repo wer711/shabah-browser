@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Search, X, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ variant = "hero", autoFocus = false }: SearchBarProps) {
-  const { query, setQuery, history, addHistory } = useSearchStore();
+  const { query, setQuery } = useSearchStore();
   const connected = usePrivacyStore((s) => s.connected);
   const [local, setLocal] = useState(query);
   const [focused, setFocused] = useState(false);
@@ -33,7 +33,6 @@ export function SearchBar({ variant = "hero", autoFocus = false }: SearchBarProp
     const value = (q ?? local).trim();
     if (!value) return;
     setQuery(value);
-    addHistory(value);
     window.dispatchEvent(
       new CustomEvent("onionsearch:submit", { detail: value })
     );
@@ -117,30 +116,6 @@ export function SearchBar({ variant = "hero", autoFocus = false }: SearchBarProp
           </Button>
         </div>
       </div>
-
-      {/* History dropdown */}
-      {focused && history.length > 0 && (
-        <div className="absolute z-30 mt-2 w-full max-w-3xl rounded-xl border border-border bg-popover/95 backdrop-blur shadow-xl overflow-hidden">
-          <div className="px-3 py-2 text-xs text-muted-foreground border-b border-border flex items-center justify-between">
-            <span>{t("search.recentTitle")}</span>
-          </div>
-          <ul className="max-h-64 overflow-y-auto">
-            {history.slice(0, 8).map((h) => (
-              <li key={h}>
-                <button
-                  type="button"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => submit(h)}
-                  className="w-full text-right px-3 py-2 hover:bg-accent/50 flex items-center gap-2 text-sm"
-                >
-                  <Search className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span className="truncate">{h}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 }

@@ -169,3 +169,38 @@ Stage Summary:
 - Settings reduced from 7 to 4 tabs
 - Admin dashboard improved spacing
 - Search results cached in-memory (60s TTL)
+---
+Task ID: 1
+Agent: main
+Task: Fix Shabah app - preview not showing, hydration errors, static settings, remove unnecessary storage
+
+Work Log:
+- Analyzed full project structure: stores, components, layouts, theme system
+- Identified root cause: page.tsx was reset to default Z.ai template (logo only)
+- Fixed privacy-store.ts: Moved random data (relays, sessionId, IP) to lazy client-side initialization to prevent hydration mismatch
+- Fixed settings-store.ts: Removed persist middleware (was using localStorage) - now in-memory only (zero-data philosophy)
+- Fixed search-store.ts: Removed history array and addHistory method (no search storage in browser)
+- Rewrote page.tsx: Wired up full Shabah app with Sidebar + view routing (home, results, proxy, settings, admin) + AI Panel + MobileBottomBar + Footer
+- Fixed search-bar.tsx: Removed history dropdown (no search data storage)
+- Fixed home-screen.tsx: Added bilingual feature descriptions, gated status pill behind initialized state
+- Fixed sidebar.tsx: Removed deprecated initBlockedAttempts useEffect, gated blockedAttempts display behind initialized
+- Fixed logo.tsx: Removed settings store dependency (was causing hydration issue), uses single image path
+- Fixed theme-toggle.tsx: Used useSyncExternalStore for mounted detection, handles next-themes SSR correctly
+- Fixed session-id.tsx: Added initialized guard, renders skeleton until session data is available
+- Fixed footer.tsx: Added initialized guard for sessionId display, renamed export to Footer
+- Fixed privacy-panel.tsx: Added initialized guard with loading skeleton
+- Fixed results-view.tsx: Added local ResultTab type definition
+- Fixed admin-dashboard.tsx: Added initialized state check
+
+Stage Summary:
+- Preview now renders correctly with full Shabah application
+- No hydration errors in dev log or console
+- Theme toggle (dark/light) works correctly via next-themes
+- Language switching (Arabic/English) works with immediate UI translation
+- Settings respond to all user input (switches, selectors, sliders)
+- Sidebar navigation between Home, Results, Settings, Admin works
+- AI Panel opens/closes correctly
+- Mobile bottom bar present for small screens
+- No search history stored anywhere (temporary in-memory only)
+- No settings persisted to localStorage (zero-data approach)
+- Lint passes with 0 errors

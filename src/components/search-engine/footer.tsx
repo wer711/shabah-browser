@@ -5,15 +5,15 @@ import { usePrivacyStore } from "@/store/privacy-store";
 import { useSearchStore } from "@/store/search-store";
 import { useTranslation } from "@/hooks/use-translation";
 
-export function SiteFooter() {
-  const { connected, firewallActive, encryption, sessionId } = usePrivacyStore();
+export function Footer() {
+  const { connected, firewallActive, encryption, sessionId, initialized } = usePrivacyStore();
   const reset = useSearchStore((s) => s.reset);
   const view = useSearchStore((s) => s.view);
   const { t } = useTranslation();
 
   return (
     <footer className="mt-auto border-t border-border bg-background/60 backdrop-blur">
-      <div className="max-w-6xl mx-auto px-4 py-4">
+      <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-4 flex-wrap justify-center text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
@@ -43,7 +43,9 @@ export function SiteFooter() {
               <EyeOff className="w-3 h-3" />
               {t("site.zeroLogs")}
             </span>
-            <code className="text-muted-foreground/70 dir-ltr text-[10px]">{sessionId}</code>
+            {initialized && sessionId && (
+              <code className="text-muted-foreground/70 dir-ltr text-[10px]">{sessionId}</code>
+            )}
           </div>
 
           <div className="flex items-center gap-3 text-muted-foreground">

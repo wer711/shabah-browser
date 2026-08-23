@@ -11,8 +11,11 @@ export interface RelayNode {
 }
 
 interface PrivacyState {
+  // Initialization flag — prevents hydration mismatch
+  initialized: boolean;
+
   connected: boolean;
-  sessionId: string; // SHB-XXXX-XXXX style (rotates every 24h, no PII)
+  sessionId: string;
   sessionIssuedAt: number;
   encryption: "AES-256-GCM" | "ChaCha20-Poly1305";
   relays: RelayNode[];
@@ -23,6 +26,8 @@ interface PrivacyState {
   pagesProxied: number;
   bytesSaved: number;
 
+  // Call this once on client mount to populate random values
+  initialize: () => void;
   connect: () => void;
   disconnect: () => void;
   rotateCircuit: () => void;
@@ -75,7 +80,7 @@ function buildCircuit(): RelayNode[] {
   const entry = POOL.filter((p) => p.role === "entry");
   const middle = POOL.filter((p) => p.role === "middle");
   const exit = POOL.filter((p) => p.role === "exit");
-  const pick = <T>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
+  const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
   return [
     { ...pick(entry), role: "entry" },
     { ...pick(middle), role: "middle" },
@@ -89,21 +94,35 @@ function buildCircuit(): RelayNode[] {
   }));
 }
 
-const INITIAL_RELAYS = buildCircuit();
-const INITIAL_SESSION = randomSessionId();
-
-export const usePrivacyStore = create<PrivacyState>((set) => ({
+// Deterministic defaults for SSR — prevent hydration mismatch
+const DETERMINISTIC_DEFAULTS = {
+  initialized: false,
   connected: true,
-  sessionId: INITIAL_SESSION,
-  sessionIssuedAt: Date.now(),
-  encryption: "ChaCha20-Poly1305",
-  relays: INITIAL_RELAYS,
-  visibleIp: randomIp(),
+  sessionId: "",
+  sessionIssuedAt: 0,
+  encryption: "ChaCha20-Poly1305" as const,
+  relays: [] as RelayNode[],
+  visibleIp: "",
   firewallActive: true,
   blockedAttempts: 0,
   queriesCount: 0,
   pagesProxied: 0,
   bytesSaved: 0,
+};
+
+export const usePrivacyStore = create<PrivacyState>((set) => ({
+  ...DETERMINISTIC_DEFAULTS,
+
+  // Called once on client mount to populate random values
+  initialize: () =>
+    set({
+      initialized: true,
+      sessionId: randomSessionId(),
+      sessionIssuedAt: Date.now(),
+      relays: buildCircuit(),
+      visibleIp: randomIp(),
+      blockedAttempts: Math.floor(Math.random() * 12) + 3,
+    }),
 
   connect: () =>
     set({

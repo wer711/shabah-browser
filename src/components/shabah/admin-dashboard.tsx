@@ -44,6 +44,7 @@ async function fetchMetrics() {
 export function AdminDashboard() {
   const admin = useAdminStore();
   const privacy = usePrivacyStore();
+  const initialized = usePrivacyStore((s) => s.initialized);
   const [serverMetrics, setServerMetrics] = useState<any>(null);
   const [now, setNow] = useState(new Date());
 

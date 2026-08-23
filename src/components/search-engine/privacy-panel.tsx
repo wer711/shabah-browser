@@ -26,8 +26,20 @@ export function PrivacyPanel() {
     pagesProxied,
     bytesSaved,
     sessionId,
+    initialized,
   } = usePrivacyStore();
   const { t } = useTranslation();
+
+  if (!initialized) {
+    // Skeleton while privacy data loads
+    return (
+      <div className="rounded-xl border border-border bg-card/60 animate-pulse p-4 space-y-3">
+        <div className="h-4 w-32 bg-muted rounded" />
+        <div className="h-20 bg-muted rounded" />
+        <div className="h-12 bg-muted rounded" />
+      </div>
+    );
+  }
 
   if (!connected) {
     return (

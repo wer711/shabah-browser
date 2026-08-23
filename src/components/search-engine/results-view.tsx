@@ -5,7 +5,7 @@ import { Search, Newspaper, Image as ImageIcon, AlertCircle } from "lucide-react
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SearchBar } from "./search-bar";
 import { ResultCard, ResultSkeleton } from "./result-card";
-import { useSearchStore, type ResultTab } from "@/store/search-store";
+import { useSearchStore } from "@/store/search-store";
 import { usePrivacyStore } from "@/store/privacy-store";
 import { useAdminStore } from "@/store/admin-store";
 import { PrivacyPanel } from "./privacy-panel";
@@ -32,6 +32,8 @@ function getCached(query: string, tab: string): any[] | null {
 function setCached(query: string, tab: string, results: any[]) {
   searchCache.set(`${query}|${tab}`, { results, ts: Date.now() });
 }
+
+type ResultTab = "web" | "news" | "images";
 
 async function doSearch(query: string, tab: ResultTab) {
   const params = new URLSearchParams();

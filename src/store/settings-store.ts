@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
 
 export type SecurityLevel = "standard" | "safer" | "safest";
 export type Tab = "web" | "news" | "images";
@@ -11,7 +10,7 @@ interface SettingsState {
   language: "ar" | "en";
   defaultTab: Tab;
   resultsPerPage: number;
-  openLinksViaProxy: boolean; // always-on anonymous view
+  openLinksViaProxy: boolean;
   safeSearch: boolean;
 
   // circuit
@@ -20,7 +19,7 @@ interface SettingsState {
   exitCountry: HopCountry;
   rotateEveryMinutes: number;
   blockWebRTC: boolean;
-  killSwitch: boolean; // always-on, can't be turned off really
+  killSwitch: boolean;
 
   // privacy
   noHistory: boolean;
@@ -28,7 +27,7 @@ interface SettingsState {
   blockAds: boolean;
   blockThirdPartyCookies: boolean;
   spoofFingerprint: boolean;
-  doshBlock: boolean; // defense against port scan / waves
+  doshBlock: boolean;
 
   // search
   aiSummarizer: boolean;
@@ -85,24 +84,13 @@ const DEFAULTS: Omit<SettingsState, "set" | "reset"> = {
   adminMode: false,
 };
 
-export const useSettingsStore = create<SettingsState>()(
-  persist(
-    (set) => ({
-      ...DEFAULTS,
-      set: (key, value) => set({ [key]: value } as Partial<SettingsState>),
-      reset: () => set(DEFAULTS),
-    }),
-    {
-      name: "shabah-settings",
-      storage: createJSONStorage(() => localStorage),
-      // Only persist user preferences, NOT search/ browsing data
-      partialize: (state) => {
-        const { set: _s, reset: _r, ...rest } = state;
-        return rest as SettingsState;
-      },
-    }
-  )
-);
+// In-memory only — no persistence, no localStorage.
+// All settings are temporary and reset on page close (zero-data philosophy).
+export const useSettingsStore = create<SettingsState>()((set) => ({
+  ...DEFAULTS,
+  set: (key, value) => set({ [key]: value } as Partial<SettingsState>),
+  reset: () => set(DEFAULTS),
+}));
 
 // Security level metadata (used by UI labels)
 export const SECURITY_LEVELS: Record<

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Home,
   Search,
@@ -37,19 +37,12 @@ export function Sidebar() {
   const newIdentity = usePrivacyStore((s) => s.newIdentity);
   const firewallActive = usePrivacyStore((s) => s.firewallActive);
   const blockedAttempts = usePrivacyStore((s) => s.blockedAttempts);
-  const initBlockedAttempts = usePrivacyStore((s) => s.initBlockedAttempts);
+  const initialized = usePrivacyStore((s) => s.initialized);
 
   const toggleAI = useAIStore((s) => s.togglePanel);
   const aiOpen = useAIStore((s) => s.panelOpen);
   const adminMode = useSettingsStore((s) => s.adminMode);
   const { t } = useTranslation();
-
-  // Fix hydration mismatch: initialize blockedAttempts client-side only
-  useEffect(() => {
-    if (blockedAttempts === 0) {
-      initBlockedAttempts();
-    }
-  }, []);
 
   const width = collapsed ? "w-16" : "w-56";
 
@@ -119,7 +112,7 @@ export function Sidebar() {
               <Tooltip key={item.key}>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={() => setView(item.key)}
+                    onClick={() => setView(item.key as any)}
                     className={`w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors focus-ring ${
                       active
                         ? "bg-primary/15 text-primary font-medium"
@@ -208,7 +201,7 @@ export function Sidebar() {
               {firewallActive ? t("footer.firewallActive") : t("footer.firewallDisabled")}
             </span>
           )}
-          {!collapsed && firewallActive && (
+          {!collapsed && firewallActive && initialized && (
             <span className="text-[10px] bg-primary/15 px-1.5 py-0.5 rounded-full">
               {blockedAttempts}
             </span>
@@ -216,7 +209,7 @@ export function Sidebar() {
         </div>
 
         {/* Session id (compact) */}
-        {!collapsed && <SessionIdBadge compact />}
+        {!collapsed && initialized && <SessionIdBadge compact />}
 
         {/* Theme toggle */}
         <div className={`flex ${collapsed ? "justify-center" : "justify-end"}`}>
@@ -268,7 +261,7 @@ export function MobileBottomBar() {
               key={it.key}
               onClick={() => {
                 if (it.key === "home") reset();
-                setView(it.key);
+                setView(it.key as any);
               }}
               className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-[10px] ${
                 active ? "text-primary" : "text-muted-foreground"

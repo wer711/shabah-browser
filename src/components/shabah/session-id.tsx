@@ -3,13 +3,13 @@
 import { Copy, RefreshCw, KeyRound } from "lucide-react";
 import { useState } from "react";
 import { usePrivacyStore } from "@/store/privacy-store";
-import { useSettingsStore } from "@/store/settings-store";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useTranslation } from "@/hooks/use-translation";
 
 export function SessionIdBadge({ compact = false }: { compact?: boolean }) {
   const sessionId = usePrivacyStore((s) => s.sessionId);
+  const initialized = usePrivacyStore((s) => s.initialized);
   const newIdentity = usePrivacyStore((s) => s.newIdentity);
   const [copied, setCopied] = useState(false);
   const { t } = useTranslation();
@@ -20,6 +20,11 @@ export function SessionIdBadge({ compact = false }: { compact?: boolean }) {
     toast.success(t("session.copied"));
     setTimeout(() => setCopied(false), 1500);
   };
+
+  if (!initialized || !sessionId) {
+    // Don't render until we have a session ID
+    return compact ? <div className="h-6" /> : <div className="rounded-xl border border-border bg-card/40 p-4 h-24" />;
+  }
 
   if (compact) {
     return (
@@ -68,10 +73,4 @@ export function SessionIdBadge({ compact = false }: { compact?: boolean }) {
       </p>
     </div>
   );
-}
-
-// Hook to force-update on theme change so logo swaps correctly
-export function useIsDark() {
-  const theme = useSettingsStore((s) => s.theme);
-  return theme === "dark";
 }

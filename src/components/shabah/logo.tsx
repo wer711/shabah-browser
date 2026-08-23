@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useSettingsStore } from "@/store/settings-store";
 
 interface LogoProps {
   size?: number;
@@ -11,11 +10,6 @@ interface LogoProps {
 }
 
 export function ShabahLogo({ size = 96, withWordmark = false, className = "", float = false }: LogoProps) {
-  const theme = useSettingsStore((s) => s.theme);
-  // shabah-logo.png has bright navy/cyan (best on dark bg)
-  // shabah-logo-light.png is the variant (use it on light bg too if it reads well)
-  const src = theme === "dark" ? "/shabah-logo.png" : "/shabah-logo.png";
-
   return (
     <div className={`flex items-center gap-3 ${className}`}>
       <div
@@ -27,7 +21,7 @@ export function ShabahLogo({ size = 96, withWordmark = false, className = "", fl
           style={{ background: "radial-gradient(circle, var(--primary), transparent 70%)" }}
         />
         <Image
-          src={src}
+          src="/shabah-logo.png"
           alt="شبح"
           fill
           priority
