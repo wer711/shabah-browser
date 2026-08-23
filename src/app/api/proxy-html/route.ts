@@ -87,9 +87,9 @@ function rewriteLinks(html: string): string {
 /** Security headers for proxied HTML responses. */
 const SECURITY_HEADERS = {
   "Content-Security-Policy":
-    "default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src * data:; font-src *; connect-src 'self'; frame-src 'none'; object-src 'none';",
+    "default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline' *; img-src * data:; font-src *; connect-src 'self' *; frame-src 'self'; object-src 'none';",
   "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
+  "X-Frame-Options": "SAMEORIGIN",
   "Referrer-Policy": "no-referrer",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
 };

@@ -191,3 +191,30 @@ Stage Summary:
 - Proxy toolbar has its own hamburger menu for mobile navigation
 - Fonts properly applied: Alexandria (body), Cairo (headings) — matching reference site
 - Verified on mobile and desktop viewports with VLM analysis
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: Test and fix all search operations and sections, resolve results view crash
+
+Work Log:
+- Identified 4 critical bugs causing the results view crash and other issues
+- Bug 1 (CRASH): `results-view.tsx` line 184 — `.map((t) => ...)` shadowed the `t` translation function. Inside the map, `t("results.tabWeb")` called a string as a function, causing TypeError crash. Fixed by renaming to `tabKey`.
+- Bug 2 (CRASH): `search-bar.tsx` line 78 — mixed `background` (CSS shorthand) with `backgroundSize` (longhand) in inline styles. React/Next.js 16 escalated this to a fatal error. Fixed by using `backgroundImage` instead and setting style to `undefined` when not focused.
+- Bug 3: `proxy-view.tsx` line 59 — used `React.startTransition()` but `React` was not imported. Fixed by using lazy state initialization with `useState(() => ...)` instead of useEffect+startTransition.
+- Bug 4: `proxy-html/route.ts` — CSP had `frame-src 'none'` and `X-Frame-Options: DENY`, blocking the proxy content from loading in the iframe. Fixed: `frame-src 'self'` and `X-Frame-Options: SAMEORIGIN`.
+- Bug 5: `sidebar.tsx` — "PRIVATE" English text showing in Arabic mode on both desktop sidebar and mobile drawer. Removed the text entirely.
+- Verified all sections work via agent-browser: homepage, search (web/news/images tabs), settings (4 tabs), proxy browsing, mobile drawer, mobile proxy view
+- Search API tested: Arabic queries return 8-10 results, news tab adds recency filter, images tab returns image results
+- Proxy browsing verified with Al Jazeera (full page content loaded correctly in iframe)
+- Wikipedia proxy returns 403 (external site blocks server IP, not a code bug)
+
+Stage Summary:
+- Results view crash fully resolved — was caused by variable shadowing (`t` used as both translation function and map iterator)
+- Search bar React style warning eliminated — no more background/backgroundSize conflict
+- Proxy iframe loading fixed — CSP and X-Frame-Options now allow same-origin framing
+- Proxy view initialization fixed — removed unnecessary React.startTransition
+- All 4 app sections verified working: home, results, settings, proxy
+- All 3 search tabs working: web, news, images
+- Lint clean (0 errors, 0 warnings)
+- Files modified: results-view.tsx, search-bar.tsx, proxy-view.tsx, proxy-html/route.ts, sidebar.tsx

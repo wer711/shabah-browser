@@ -181,18 +181,18 @@ export function ResultsView() {
       {/* Tabs */}
       <div className="border-b border-border">
         <div className="max-w-[720px] mx-auto px-4 flex items-center gap-1">
-          {(["web", "news", "images"] as const).map((t) => {
+          {(["web", "news", "images"] as const).map((tabKey) => {
             const icons = { web: Search, news: Newspaper, images: ImageIcon };
             const labels: Record<string, string> = { web: t("results.tabWeb"), news: t("results.tabNews"), images: t("results.tabImages") };
-            const Icon = icons[t];
+            const Icon = icons[tabKey];
             return (
               <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`flex items-center gap-1.5 px-3 py-2.5 text-sm border-b-2 transition-colors ${tab === t ? "border-primary text-primary font-medium" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+                key={tabKey}
+                onClick={() => setTab(tabKey)}
+                className={["flex items-center gap-1.5 px-3 py-2.5 text-sm border-b-2 transition-colors", tab === tabKey ? "border-primary text-primary font-medium" : "border-transparent text-muted-foreground hover:text-foreground"].join(" ")}
               >
                 <Icon className="w-4 h-4" />
-                <span className="hidden sm:inline">{labels[t]}</span>
+                <span className="hidden sm:inline">{labels[tabKey]}</span>
               </button>
             );
           })}

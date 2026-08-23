@@ -74,13 +74,11 @@ export function SearchBar({ variant = "hero", autoFocus = false }: SearchBarProp
         {/* Animated glow ring */}
         <div
           className={"absolute -inset-[2px] rounded-2xl transition-opacity duration-500 " + (focused ? "opacity-100" : "opacity-0")}
-          style={{
-            background: focused
-              ? "linear-gradient(135deg, var(--primary) 0%, oklch(0.55 0.2 250) 50%, var(--primary) 100%)"
-              : "transparent",
+          style={focused ? {
+            backgroundImage: "linear-gradient(135deg, var(--primary) 0%, oklch(0.55 0.2 250) 50%, var(--primary) 100%)",
             backgroundSize: "200% 200%",
-            animation: focused ? "border-flow 3s ease infinite" : "none",
-          }}
+            animation: "border-flow 3s ease infinite",
+          } : undefined}
           aria-hidden
         />
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback, startTransition } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   ArrowRight,
   RefreshCw,
@@ -20,10 +20,11 @@ export function ProxyView() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
-  const [urlInput, setUrlInput] = useState("");
-  const [history, setHistory] = useState<string[]>([]);
-  const [historyIdx, setHistoryIdx] = useState(-1);
+  const [urlInput, setUrlInput] = useState(() => proxyUrl || "");
+  const [history, setHistory] = useState<string[]>(() => proxyUrl ? [proxyUrl] : []);
+  const [historyIdx, setHistoryIdx] = useState(() => proxyUrl ? 0 : -1);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const initializedRef = useRef(!!proxyUrl);
 
   const buildSrc = (url: string) => 
     "/api/proxy-html?" + new URLSearchParams({ url }).toString();
@@ -49,21 +50,6 @@ export function ProxyView() {
     },
     [historyIdx, incrementPages],
   );
-
-  const initializedRef = useRef(false);
-
-  useEffect(() => {
-    if (proxyUrl && !initializedRef.current) {
-      initializedRef.current = true;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      React.startTransition(() => {
-        setHistory([proxyUrl]);
-        setHistoryIdx(0);
-        setUrlInput(proxyUrl);
-        setLoading(true);
-      });
-    }
-  }, [proxyUrl]);
 
   const reload = () => {
     if (iframeRef.current && urlInput) {

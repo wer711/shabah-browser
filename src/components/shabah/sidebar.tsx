@@ -93,9 +93,6 @@ export function Sidebar() {
                 <div className="text-sm font-bold leading-none">
                   <span className="text-primary">ش</span>بح
                 </div>
-                <div className="text-[9px] text-muted-foreground font-mono mt-0.5 dir-ltr">
-                  PRIVATE
-                </div>
               </div>
             </div>
           )}
@@ -287,9 +284,6 @@ export function MobileHeader() {
             <div className="min-w-0">
               <div className="text-sm font-bold leading-none">
                 <span className="text-primary">ش</span>بح
-              </div>
-              <div className="text-[9px] text-muted-foreground font-mono mt-0.5 dir-ltr">
-                PRIVATE
               </div>
             </div>
           </div>
