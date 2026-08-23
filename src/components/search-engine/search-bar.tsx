@@ -37,43 +37,43 @@ export function SearchBar({ variant = "hero", autoFocus = false }: SearchBarProp
   const isHero = variant === "hero";
 
   const containerClass = [
-    "relative flex items-center gap-2 rounded-2xl backdrop-blur-xl border transition-colors duration-300",
-    isHero ? "bg-card/60 border-border/80 p-1.5 pl-2" : "bg-card/80 border-border p-1 pl-2",
+    "relative flex items-center gap-1.5 sm:gap-2 rounded-2xl backdrop-blur-xl border transition-colors duration-300 w-full min-w-0",
+    isHero ? "bg-card/60 border-border/80 p-1 sm:p-1.5 sm:pl-2" : "bg-card/80 border-border p-1 pl-1.5",
     focused ? "border-primary/40 shadow-lg shadow-primary/5" : "hover:border-border",
   ].join(" ");
 
   const iconClass = [
     "flex items-center justify-center rounded-xl shrink-0 transition-all duration-300",
-    isHero ? "w-11 h-11" : "w-8 h-8",
+    isHero ? "w-9 h-9 sm:w-11 sm:h-11" : "w-7 h-7 sm:w-8 sm:h-8",
     focused
       ? "bg-primary/20 text-primary"
       : "bg-primary/10 text-primary/70 group-hover:bg-primary/15 group-hover:text-primary",
   ].join(" ");
 
   const btnClass = [
-    "shrink-0 flex items-center gap-1.5 rounded-xl text-primary-foreground font-medium transition-all duration-300",
-    isHero ? "h-11 px-5 text-sm" : "h-8 px-3.5 text-xs",
+    "shrink-0 flex items-center gap-1 sm:gap-1.5 rounded-xl text-primary-foreground font-medium transition-all duration-300",
+    isHero ? "h-10 px-3 sm:h-11 sm:px-5 text-xs sm:text-sm" : "h-7 px-2.5 sm:h-8 sm:px-3.5 text-[11px] sm:text-xs",
     focused
       ? "bg-primary hover:bg-primary/90 shadow-md shadow-primary/25"
       : "bg-primary/80 hover:bg-primary",
   ].join(" ");
 
   const inputClass = [
-    "flex-1 bg-transparent border-0 outline-none placeholder:text-muted-foreground text-foreground",
-    isHero ? "h-12 px-2 text-base sm:text-lg" : "h-9 px-1.5 text-sm",
+    "flex-1 min-w-0 bg-transparent border-0 outline-none placeholder:text-muted-foreground text-foreground truncate",
+    isHero ? "h-10 sm:h-12 px-1.5 sm:px-2 text-sm sm:text-base sm:text-lg" : "h-7 sm:h-9 px-1 sm:px-1.5 text-xs sm:text-sm",
   ].join(" ");
 
   const clearClass = [
     "shrink-0 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground transition-colors",
-    isHero ? "w-9 h-9" : "w-7 h-7",
+    isHero ? "w-8 h-8 sm:w-9 sm:h-9" : "w-6 h-6 sm:w-7 sm:h-7",
   ].join(" ");
 
   return (
-    <div className="w-full">
-      <div className={`relative group transition-all duration-300 ${focused ? (isHero ? "scale-[1.02]" : "scale-[1.01]") : ""}`}>
+    <div className="w-full min-w-0">
+      <div className={"relative group transition-all duration-300 " + (focused ? (isHero ? "scale-[1.02]" : "scale-[1.01]") : "")}>
         {/* Animated glow ring */}
         <div
-          className={`absolute -inset-[2px] rounded-2xl transition-opacity duration-500 ${focused ? "opacity-100" : "opacity-0"}`}
+          className={"absolute -inset-[2px] rounded-2xl transition-opacity duration-500 " + (focused ? "opacity-100" : "opacity-0")}
           style={{
             background: focused
               ? "linear-gradient(135deg, var(--primary) 0%, oklch(0.55 0.2 250) 50%, var(--primary) 100%)"
@@ -88,7 +88,7 @@ export function SearchBar({ variant = "hero", autoFocus = false }: SearchBarProp
         <div className={containerClass}>
           {/* Shield icon */}
           <div className={iconClass}>
-            <ShieldCheck className={`transition-transform duration-300 ${isHero ? "w-5 h-5" : "w-4 h-4"} ${focused ? "scale-110" : ""}`} />
+            <ShieldCheck className={["transition-transform duration-300", isHero ? "w-4 h-4 sm:w-5 sm:h-5" : "w-3.5 h-3.5 sm:w-4 sm:h-4", focused ? "scale-110" : ""].join(" ")} />
           </div>
 
           {/* Input */}
@@ -111,14 +111,14 @@ export function SearchBar({ variant = "hero", autoFocus = false }: SearchBarProp
               className={clearClass}
               aria-label={t("search.clear")}
             >
-              <X className={isHero ? "w-4.5 h-4.5" : "w-3.5 h-3.5"} />
+              <X className={isHero ? "w-4 h-4 sm:w-4.5 sm:h-4.5" : "w-3 h-3 sm:w-3.5 sm:h-3.5"} />
             </button>
           )}
 
           {/* Submit button */}
           <button type="button" onClick={() => submit()} className={btnClass}>
-            <Search className={isHero ? "w-4 h-4" : "w-3.5 h-3.5"} />
-            {t("search.button")}
+            <Search className={isHero ? "w-3.5 h-3.5 sm:w-4 sm:h-4" : "w-3 h-3 sm:w-3.5 sm:h-3.5"} />
+            <span className="hidden sm:inline">{t("search.button")}</span>
           </button>
         </div>
       </div>

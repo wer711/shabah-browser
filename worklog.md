@@ -141,3 +141,24 @@ Work Log:
 Stage Summary:
 - Search bar now has: animated gradient glow border on focus, glass morphism backdrop, smooth scale, refined shield icon with scale animation, polished submit button with shadow
 - Tagline "شبح · تصفّح بدون أثر" shows beside the title, translatable via i18n
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Fix search bar overflow, remove English text, apply Alexandria font
+
+Work Log:
+- Analyzed uploaded screenshot via VLM: confirmed search bar overflowing horizontally on mobile
+- Analyzed reference website (school.hanyhussain.com): extracted CSS showing Alexandria, Cairo, Tajawal, Zain fonts with stroke-based outlined icons
+- Removed English text 'SHABAH · PRIVATE BROWSER' from home screen (was showing in Arabic mode)
+- Fixed search bar overflow: added min-w-0 on input, w-full min-w-0 on container, responsive sizing for all elements (icon, input, clear btn, submit btn), overflow-hidden on wrapper, hidden text on submit btn below sm breakpoint
+- Replaced Geist Sans font with Alexandria (next/font/google) in layout.tsx with weights 400-800 and Arabic+Latin subsets
+- Updated globals.css font-sans variable to use Alexandria as primary with Tajawal fallback
+- Verified on mobile (iPhone 14) via VLM: search bar fits within screen, no English text above it
+- Verified on desktop (1440x900): tagline 'شبح· تصفّح بدون أثر' shows correctly, no English text
+
+Stage Summary:
+- Search bar now fully responsive with no overflow on any screen size
+- English branding text removed from Arabic mode
+- Font changed to Alexandria (matching reference site) with proper Arabic rendering
+- Lucide icons already match the outlined/stroke style used by the reference site
