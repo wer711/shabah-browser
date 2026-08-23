@@ -74,3 +74,28 @@ Stage Summary:
 - Full verification completed: homepage, settings (tabs, theme, language), search with real results + AI summary
 - Files modified: next.config.ts, search-bar.tsx, home-screen.tsx
 - Files created: watchdog.sh, start-server.sh
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Clean project files, redesign homepage for professional minimal look
+
+Work Log:
+- Analyzed uploaded screenshots: confirmed page was cluttered with feature cards, AI CTA, privacy promise, status bars
+- Deleted unnecessary files: 8 research JSONs, screenshots, debug scripts (watchdog.sh, keep-alive.sh, etc.), logo PNGs (using SVG), examples/, tests/, download/, agent-ctx/ directories
+- Deleted large .tar file from upload/ (8.9MB)
+- Project size reduced from ~2MB to 1.2MB (excluding node_modules/.next/.git)
+- Completely rewrote home-screen.tsx: removed all feature cards, AI CTA, privacy promise, ghost decorations, speed dial reduced from 8 to 4 items
+- Rewrote footer.tsx: reduced to single-line minimal footer (connection status + firewall + version)
+- Rewrote sidebar.tsx: changed breakpoint from sm to md, reduced sizes, simplified mobile bottom bar (3 items + AI)
+- Updated page.tsx: simplified layout using h-dvh, cleaner structure
+- Updated search-bar.tsx: responsive sizing for mobile, hide button text on small screens
+- Verified with agent-browser on both mobile (375x812) and desktop (1280x800) viewports
+
+Stage Summary:
+- Project size: 1.2MB (well under 5MB target)
+- Homepage: clean, minimal — just logo + title + search bar + 4 quick links
+- Mobile: bottom nav bar (الرئيسية, إعدادات, AI) + clean footer
+- Desktop: full sidebar (الرئيسية, النتائج, الإعدادات, شبح AI, هوية جديدة) + footer
+- Files modified: home-screen.tsx, footer.tsx, sidebar.tsx, page.tsx, search-bar.tsx
+- Files deleted: research-*.json (8), examples/, tests/, download/, agent-ctx/, *.sh, *.png from root

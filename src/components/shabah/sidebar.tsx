@@ -44,7 +44,7 @@ export function Sidebar() {
   const adminMode = useSettingsStore((s) => s.adminMode);
   const { t } = useTranslation();
 
-  const width = collapsed ? "w-16" : "w-56";
+  const width = collapsed ? "w-14" : "w-52";
 
   const navItems = [
     { key: "home", label: t("nav.home"), icon: Home },
@@ -55,34 +55,29 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`hidden sm:flex sidebar-transition sticky top-0 h-screen shrink-0 flex-col border-l border-border bg-sidebar text-sidebar-foreground ${width}`}
+      className={`hidden md:flex sidebar-transition sticky top-0 h-dvh shrink-0 flex-col border-l border-border bg-sidebar text-sidebar-foreground ${width}`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-sidebar-border h-14">
+      <div className="flex items-center justify-between p-3 border-b border-sidebar-border h-12">
         <button
-          onClick={() => {
-            reset();
-            setView("home");
-          }}
+          onClick={() => { reset(); setView("home"); }}
           className="flex items-center gap-2 min-w-0 focus-ring rounded-lg"
           title={t("nav.homeTitle")}
         >
           {collapsed ? (
-            <div className="w-8 h-8 relative shrink-0">
-              <ShabahLogo size={32} />
+            <div className="w-7 h-7 relative shrink-0">
+              <ShabahLogo size={28} />
             </div>
           ) : (
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-8 h-8 relative shrink-0">
-                <ShabahLogo size={32} />
+              <div className="w-7 h-7 relative shrink-0">
+                <ShabahLogo size={28} />
               </div>
               <div className="min-w-0">
                 <div className="text-sm font-bold leading-none">
                   <span className="text-primary">ش</span>بح
                 </div>
-                <div className="text-[9px] text-muted-foreground font-mono mt-0.5 dir-ltr">
-                  PRIVATE
-                </div>
+                <div className="text-[8px] text-muted-foreground font-mono mt-0.5 dir-ltr">PRIVATE</div>
               </div>
             </div>
           )}
@@ -92,140 +87,90 @@ export function Sidebar() {
             variant="ghost"
             size="icon"
             onClick={() => setCollapsed(true)}
-            className="h-7 w-7 text-muted-foreground hover:text-foreground"
-            title={t("nav.collapseSidebar")}
+            className="h-6 w-6 text-muted-foreground hover:text-foreground"
           >
-            <PanelLeftClose className="w-4 h-4" />
+            <PanelLeftClose className="w-3.5 h-3.5" />
           </Button>
         )}
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto p-2 space-y-1">
+      <nav className="flex-1 overflow-y-auto p-2 space-y-0.5">
         <TooltipProvider delayDuration={200}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = view === item.key;
-            const adminHidden = item.key === "admin" && !adminMode;
-            if (adminHidden) return null;
+            if (item.key === "admin" && !adminMode) return null;
             return (
               <Tooltip key={item.key}>
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => setView(item.key as any)}
-                    className={`w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors focus-ring ${
+                    className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] transition-colors focus-ring ${
                       active
                         ? "bg-primary/15 text-primary font-medium"
-                        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                     } ${collapsed ? "justify-center px-0" : ""}`}
                   >
-                    <Icon className="w-4.5 h-4.5 shrink-0" />
+                    <Icon className="w-4 h-4 shrink-0" />
                     {!collapsed && <span className="truncate">{item.label}</span>}
                   </button>
                 </TooltipTrigger>
-                {collapsed && (
-                  <TooltipContent side="left">{item.label}</TooltipContent>
-                )}
+                {collapsed && <TooltipContent side="left">{item.label}</TooltipContent>}
               </Tooltip>
             );
           })}
 
-          <div className="my-2 border-t border-sidebar-border" />
+          <div className="my-2 border-t border-sidebar-border/50" />
 
-          {/* AI assistant */}
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 onClick={() => toggleAI()}
-                className={`w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors focus-ring ${
+                className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] transition-colors focus-ring ${
                   aiOpen
                     ? "bg-primary/15 text-primary font-medium"
-                    : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 } ${collapsed ? "justify-center px-0" : ""}`}
               >
-                <Bot className="w-4.5 h-4.5 shrink-0" />
-                {!collapsed && (
-                  <span className="flex-1 text-right truncate">{t("nav.ai")}</span>
-                )}
-                {!collapsed && (
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-bold">
-                    {t("nav.new")}
-                  </span>
-                )}
+                <Bot className="w-4 h-4 shrink-0" />
+                {!collapsed && <span className="flex-1 truncate">{t("nav.ai")}</span>}
               </button>
             </TooltipTrigger>
             {collapsed && <TooltipContent side="left">{t("nav.ai")}</TooltipContent>}
           </Tooltip>
 
-          {/* Separator between AI and New Identity */}
-          <div className="mx-2 my-1 border-t border-sidebar-border/50" />
-
-          {/* New identity */}
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 onClick={newIdentity}
-                className={`w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors focus-ring text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${
-                  collapsed ? "justify-center px-0" : ""
-                }`}
+                className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] transition-colors focus-ring text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${collapsed ? "justify-center px-0" : ""}`}
               >
-                <RefreshCw className="w-4.5 h-4.5 shrink-0" />
+                <RefreshCw className="w-4 h-4 shrink-0" />
                 {!collapsed && <span className="truncate">{t("nav.newIdentity")}</span>}
               </button>
             </TooltipTrigger>
-            {collapsed && (
-              <TooltipContent side="left">{t("nav.newIdentity")}</TooltipContent>
-            )}
+            {collapsed && <TooltipContent side="left">{t("nav.newIdentity")}</TooltipContent>}
           </Tooltip>
         </TooltipProvider>
       </nav>
 
-      {/* Footer: firewall + session + theme */}
-      <div className="border-t border-sidebar-border p-2 space-y-1">
-        {/* Firewall status - compact */}
-        <div
-          className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs ${
-            firewallActive
-              ? "text-primary"
-              : "text-amber-500"
-          } ${collapsed ? "justify-center" : ""}`}
-          title={
-            firewallActive
-              ? t("footer.firewallTitle", { count: blockedAttempts })
-              : t("footer.firewallDisabledTitle")
-          }
-        >
+      {/* Footer */}
+      <div className="border-t border-sidebar-border/50 p-2 space-y-1">
+        <div className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] ${firewallActive ? "text-primary/80" : "text-amber-500"} ${collapsed ? "justify-center" : ""}`}>
           <Flame className="w-3 h-3" />
-          {!collapsed && (
-            <span className="flex-1">
-              {firewallActive ? t("footer.firewallActive") : t("footer.firewallDisabled")}
-            </span>
-          )}
+          {!collapsed && <span>{firewallActive ? t("footer.firewallActive") : t("footer.firewallDisabled")}</span>}
           {!collapsed && firewallActive && initialized && (
-            <span className="text-[10px] bg-primary/15 px-1.5 py-0.5 rounded-full">
-              {blockedAttempts}
-            </span>
+            <span className="mr-auto text-[9px] bg-primary/15 px-1 py-0.5 rounded-full">{blockedAttempts}</span>
           )}
         </div>
-
-        {/* Session id (compact) */}
         {!collapsed && initialized && <SessionIdBadge compact />}
-
-        {/* Theme toggle */}
         <div className={`flex ${collapsed ? "justify-center" : "justify-end"}`}>
           <ThemeToggle />
         </div>
-
-        {/* Expand button when collapsed */}
         {collapsed && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setCollapsed(false)}
-            className="w-full h-8 text-muted-foreground hover:text-foreground"
-            title={t("nav.expandSidebar")}
-          >
-            <PanelLeft className="w-4 h-4" />
+          <Button variant="ghost" size="icon" onClick={() => setCollapsed(false)} className="w-full h-7 text-muted-foreground hover:text-foreground">
+            <PanelLeft className="w-3.5 h-3.5" />
           </Button>
         )}
       </div>
@@ -233,7 +178,6 @@ export function Sidebar() {
   );
 }
 
-// Mobile bottom bar version (visible on small screens)
 export function MobileBottomBar() {
   const view = useSearchStore((s) => s.view);
   const setView = useSearchStore((s) => s.setView);
@@ -245,14 +189,13 @@ export function MobileBottomBar() {
 
   const items = [
     { key: "home", label: t("nav.home"), icon: Home },
-    { key: "results", label: t("mobile.search"), icon: Search },
     { key: "settings", label: t("mobile.settings"), icon: Settings },
     ...(adminMode ? [{ key: "admin", label: t("mobile.admin"), icon: Shield }] : []),
   ] as const;
 
   return (
-    <nav className="sm:hidden fixed bottom-0 inset-x-0 z-30 border-t border-border glass">
-      <div className="flex items-center justify-around h-14">
+    <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 border-t border-border/50 glass">
+      <div className="flex items-center justify-around h-12">
         {items.map((it) => {
           const Icon = it.icon;
           const active = view === it.key;
@@ -263,23 +206,19 @@ export function MobileBottomBar() {
                 if (it.key === "home") reset();
                 setView(it.key as any);
               }}
-              className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-[10px] ${
-                active ? "text-primary" : "text-muted-foreground"
-              }`}
+              className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full ${active ? "text-primary" : "text-muted-foreground"}`}
             >
-              <Icon className="w-5 h-5" />
-              {it.label}
+              <Icon className="w-4.5 h-4.5" />
+              <span className="text-[9px]">{it.label}</span>
             </button>
           );
         })}
         <button
           onClick={() => toggleAI()}
-          className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-[10px] ${
-            aiOpen ? "text-primary" : "text-muted-foreground"
-          }`}
+          className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full ${aiOpen ? "text-primary" : "text-muted-foreground"}`}
         >
-          <Bot className="w-5 h-5" />
-          AI
+          <Bot className="w-4.5 h-4.5" />
+          <span className="text-[9px]">AI</span>
         </button>
       </div>
     </nav>

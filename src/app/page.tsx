@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useSyncExternalStore } from 'react';
 import { Sidebar, MobileBottomBar } from '@/components/shabah/sidebar';
@@ -16,11 +16,7 @@ import { usePrivacyStore } from '@/store/privacy-store';
 const emptySubscribe = () => () => {};
 
 function useIsMounted() {
-  return useSyncExternalStore(
-    emptySubscribe,
-    () => true,
-    () => false
-  );
+  return useSyncExternalStore(emptySubscribe, () => true, () => false);
 }
 
 function AppShell() {
@@ -28,8 +24,6 @@ function AppShell() {
   const initialize = usePrivacyStore((s) => s.initialize);
   const initialized = usePrivacyStore((s) => s.initialized);
 
-  // Initialize privacy store client-side (populates random circuit data)
-  // Using ref guard to call only once
   const initRef = { called: false };
   if (!initRef.called && typeof window !== 'undefined' && !initialized) {
     initRef.called = true;
@@ -38,42 +32,24 @@ function AppShell() {
 
   const renderView = () => {
     switch (view) {
-      case 'home':
-        return <HomeScreen />;
-      case 'results':
-        return <ResultsView />;
-      case 'proxy':
-        return <ProxyView />;
-      case 'settings':
-        return <SettingsView />;
-      case 'admin':
-        return <AdminDashboard />;
-      default:
-        return <HomeScreen />;
+      case 'home': return <HomeScreen />;
+      case 'results': return <ResultsView />;
+      case 'proxy': return <ProxyView />;
+      case 'settings': return <SettingsView />;
+      case 'admin': return <AdminDashboard />;
+      default: return <HomeScreen />;
     }
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-dvh overflow-hidden">
       <SettingsSync />
-      {/* Sidebar — desktop */}
       <Sidebar />
-
-      {/* Main content area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto">
-          {renderView()}
-        </div>
-
-        {/* Footer (sticky to bottom) */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 overflow-y-auto">{renderView()}</div>
         <Footer />
       </div>
-
-      {/* AI Panel overlay */}
       <AiPanel />
-
-      {/* Mobile bottom navigation */}
       <MobileBottomBar />
     </div>
   );
@@ -81,16 +57,14 @@ function AppShell() {
 
 export default function Home() {
   const mounted = useIsMounted();
-
   if (!mounted) {
     return (
-      <div className="flex items-center justify-center h-screen bg-background">
-        <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
-          <span className="text-primary text-lg font-bold">ش</span>
+      <div className="flex items-center justify-center h-dvh bg-background">
+        <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
+          <span className="text-primary text-sm font-bold">ش</span>
         </div>
       </div>
     );
   }
-
   return <AppShell />;
 }
