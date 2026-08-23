@@ -78,7 +78,8 @@ export function ResultsView() {
       if (bangMatch) {
         const url = bangUrl(bangMatch.bang, bangMatch.query);
         incrementQueries();
-        window.open(url, '_blank', 'noopener,noreferrer');
+        const { startProxy } = useSearchStore.getState();
+        startProxy(url, bangMatch.bang.label);
         return;
       }
     }
@@ -91,11 +92,12 @@ export function ResultsView() {
     try {
       const data = await doSearch(q, tTab, num);
 
-      // If SDK unavailable, redirect to DuckDuckGo
+      // If SDK unavailable, navigate in-app to DuckDuckGo via proxy
       if (data.source === 'redirect' && !append) {
         incrementQueries();
         const ddgUrl = `https://duckduckgo.com/?q=${encodeURIComponent(q)}`;
-        window.open(ddgUrl, '_blank', 'noopener,noreferrer');
+        const { startProxy } = useSearchStore.getState();
+        startProxy(ddgUrl, 'DuckDuckGo');
         setResults([]);
         setError(null);
         return;

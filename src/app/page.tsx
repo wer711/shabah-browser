@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore, useEffect } from 'react';
 import { Sidebar, MobileHeader } from '@/components/shabah/sidebar';
 import { HomeScreen } from '@/components/search-engine/home-screen';
 import { ResultsView } from '@/components/search-engine/results-view';
@@ -10,6 +10,7 @@ import { AdminDashboard } from '@/components/shabah/admin-dashboard';
 import { AiPanel } from '@/components/shabah/ai-panel';
 import { Footer } from '@/components/search-engine/footer';
 import { SettingsSync } from '@/components/shabah/settings-sync';
+import { PwaInstallPrompt } from '@/components/shabah/pwa-install-prompt';
 import { useSearchStore } from '@/store/search-store';
 import { usePrivacyStore } from '@/store/privacy-store';
 
@@ -30,6 +31,13 @@ function AppShell() {
     initialize();
   }
 
+  // Register service worker
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  }, []);
+
   // Full-screen browser mode — no sidebar, no footer, no mobile header
   if (view === 'proxy') {
     return (
@@ -43,6 +51,7 @@ function AppShell() {
   return (
     <div className="flex h-dvh overflow-hidden">
       <SettingsSync />
+      <PwaInstallPrompt />
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <MobileHeader />

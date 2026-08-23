@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Globe, Clock, ImageOff, ExternalLink } from "lucide-react";
+import { Globe, Clock, ImageOff, Shield } from "lucide-react";
 import type { SearchResultItem } from "@/store/search-store";
 import { usePrivacyStore } from "@/store/privacy-store";
+import { useSearchStore } from "@/store/search-store";
 
 interface ResultCardProps {
   item: SearchResultItem;
@@ -30,15 +31,16 @@ function faviconUrl(item: SearchResultItem) {
 
 export function ResultCard({ item }: ResultCardProps) {
   const incrementPages = usePrivacyStore((s) => s.incrementPages);
+  const startProxy = useSearchStore((s) => s.startProxy);
   const [imgError, setImgError] = useState(false);
 
   const domain = getDomain(item.url);
   const path = getPath(item.url);
 
+  // Open within the app using the built-in proxy browser
   const openResult = () => {
     incrementPages();
-    // Open in real browser tab — full browsing experience
-    window.open(item.url, "_blank", "noopener,noreferrer");
+    startProxy(item.url, item.name);
   };
 
   return (
@@ -71,6 +73,7 @@ export function ResultCard({ item }: ResultCardProps) {
               </span>
             </>
           )}
+          <Shield className="w-3 h-3 text-primary/40 shrink-0" title="تصفّح آمن عبر شبح" />
         </div>
       </div>
 
@@ -82,7 +85,6 @@ export function ResultCard({ item }: ResultCardProps) {
           <h3 className="text-[17px] sm:text-[20px] font-normal leading-snug text-[#8ab4f8] hover:underline cursor-pointer flex-1">
             {item.name || domain}
           </h3>
-          <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/30 mt-1.5 shrink-0 opacity-0 group-hover/title:opacity-100 transition-opacity" />
         </div>
       </button>
 
@@ -102,10 +104,11 @@ export function ResultCard({ item }: ResultCardProps) {
 
 export function ImageResultCard({ item }: ResultCardProps) {
   const incrementPages = usePrivacyStore((s) => s.incrementPages);
+  const startProxy = useSearchStore((s) => s.startProxy);
 
   const openResult = () => {
     incrementPages();
-    window.open(item.url, "_blank", "noopener,noreferrer");
+    startProxy(item.url, item.name);
   };
 
   return (

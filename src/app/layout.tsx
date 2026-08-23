@@ -52,6 +52,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0a0a0a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="شبح" />
+        <link rel="apple-touch-icon" href="/shabah-logo.png" />
+      </head>
       <body
         className={`${alexandria.variable} ${cairo.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >

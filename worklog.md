@@ -241,3 +241,56 @@ Stage Summary:
 - All search operations verified working
 - Bang system enhanced with short aliases
 - All app sections functional
+
+---
+Task ID: 2
+Agent: PWA Agent
+Task: Add Progressive Web App (PWA) support — manifest, service worker, install prompt
+
+Work Log:
+- Created /public/manifest.json with Arabic RTL PWA config: name "شبح", display "standalone", dark theme (#0a0a0a), 192x192 + 512x512 icons
+- Created /public/sw.js service worker: caches app shell on install (/, /manifest.json, /shabah-logo.png), cache-first for static assets, network-first for API calls and navigation, offline fallback to cached home page
+- Updated layout.tsx: added PWA meta tags in <head> — manifest link, theme-color, apple-mobile-web-app-capable, apple-mobile-web-app-status-bar-style, apple-mobile-web-app-title, apple-touch-icon
+- Created pwa-install-prompt.tsx: listens for beforeinstallprompt, shows bottom-centered banner with ghost icon + "ثبّت شبح على جهازك" text + install button + dismiss X, stores dismissal in localStorage, auto-hides if already installed (standalone mode)
+- Updated page.tsx: added PwaInstallPrompt component after SettingsSync in AppShell, added useEffect to register /sw.js service worker on mount
+- ESLint: 0 errors
+- Dev server: compiled successfully, all routes returning 200
+
+Stage Summary:
+- PWA fully configured: manifest.json, service worker, meta tags, install prompt
+- App can be installed to home screen on supported browsers (Chrome, Edge, Samsung Internet)
+- When installed, opens as standalone app (no browser chrome)
+- Offline support: static assets cached, API calls fall back to cache when offline
+- Install prompt respects user dismissal (persisted in localStorage)
+- Files created: public/manifest.json, public/sw.js, src/components/shabah/pwa-install-prompt.tsx
+- Files modified: src/app/layout.tsx (PWA meta tags), src/app/page.tsx (PWA install prompt + SW registration)
+---
+Task ID: 1-8
+Agent: Main Agent
+Task: Make شبح a standalone web app with in-app browsing, PWA support, encryption verification
+
+Work Log:
+- Read all current project files to understand the architecture
+- Created PWA manifest.json with display:standalone for standalone app feel
+- Created service worker (sw.js) with cache-first for static assets, network-first for API
+- Added PWA meta tags to layout.tsx (manifest, theme-color, apple-mobile-web-app-capable)
+- Created PWA install prompt component (pwa-install-prompt.tsx)
+- Fixed result-card.tsx: changed window.open() to startProxy() for in-app browsing
+- Fixed results-view.tsx: bangs now navigate in-app instead of window.open()
+- Rewrote proxy-html/route.ts: keeps functional scripts, only removes tracking scripts, rewrites all URLs (a/img/link/script/iframe/form/srcset), injects navigation interceptor via postMessage
+- Created proxy-html/r/route.ts: resource proxy for CSS/JS/images/fonts with cache
+- Rewrote proxy-view.tsx: listens for postMessage from iframe, shows page title, URL bar with globe icon, external link button, mobile drawer with menu
+- Fixed next.config.ts: removed X-Frame-Options DENY, set frame-src 'self', added CORS for API routes
+- Added EncryptionStatus component to settings-view.tsx with 6 verification checks
+- Tested with Agent Browser: search works, W3Schools loads fully in-app proxy, Wikipedia shows proper 403 fallback, encryption panel shows all green checks
+
+Stage Summary:
+- App is now a PWA (installable, opens standalone without browser chrome)
+- Search results navigate IN-APP via proxy (not window.open)
+- Proxy keeps scripts working (only strips tracking/analytics scripts)
+- URL rewriting for all resource types (CSS, JS, images, fonts, links, forms)
+- postMessage-based navigation interceptor for in-iframe links
+- Graceful error pages with retry and back-to-results buttons
+- External link button to open in new tab when proxy fails
+- Encryption verification panel in Protection settings
+- Zero lint errors, compiles successfully
