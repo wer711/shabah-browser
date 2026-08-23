@@ -9,6 +9,7 @@ import { SettingsView } from '@/components/shabah/settings-view';
 import { AdminDashboard } from '@/components/shabah/admin-dashboard';
 import { AiPanel } from '@/components/shabah/ai-panel';
 import { Footer } from '@/components/search-engine/footer';
+import { SettingsSync } from '@/components/shabah/settings-sync';
 import { useSearchStore } from '@/store/search-store';
 import { usePrivacyStore } from '@/store/privacy-store';
 
@@ -54,6 +55,7 @@ function AppShell() {
 
   return (
     <div className="flex h-screen overflow-hidden">
+      <SettingsSync />
       {/* Sidebar — desktop */}
       <Sidebar />
 

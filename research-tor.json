@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://en.wikipedia.org/wiki/Tor_(network)",
+    "name": "Tor (network) - Wikipedia",
+    "snippet": "Tor [6] is a free overlay network for enabling anonymous communication. This technique is called onion routing. implemented of the C Tor codebase in Rust. such ...",
+    "host_name": "en.wikipedia.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://spec.torproject.org/tor-design",
+    "name": "[PDF] Tor: The Second-Generation Onion Router",
+    "snippet": "Onion Routing is a distributed overlay network designed to anonymize TCP-based applications like web browsing, se- cure shell, and instant messaging.",
+    "host_name": "spec.torproject.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.drivelock.com/en/blog/tor-network-security",
+    "name": "Introduction to the Tor Network: security and privacy - DriveLock",
+    "snippet": "Apr 2, 2025 · The Tor network works via \"onion routing\" where data is passed through a random sequence of three nodes—an entry, middle, and exit node—with ...",
+    "host_name": "www.drivelock.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/explainlikeimfive/comments/1dfet23/eli5_what_exactly_is_the_tor_network_is_it_the",
+    "name": "ELI5: What exactly is the Tor network? Is it the same as \"the internet\", i.e. a",
+    "snippet": "Jun 14, 2024 · It's like the layers of an onion; each one you peel off only reveals another layer. That's why it's called The Onion Router (TOR).",
+    "host_name": "www.reddit.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://xtom.com/blog/what-is-tor-and-how-does-it-work",
+    "name": "What Is Tor and How Does It Work? - xTom",
+    "snippet": "Apr 1, 2025 · Tor, short for “The Onion Router,” is a browser and network that anonymizes your online activity by sending it through multiple layers of ...",
+    "host_name": "xtom.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://thesesjournal.com/index.php/1/article/download/74/77",
+    "name": "[PDF] A Survey on Tor's Multi Layer Architecture and Web Implications",
+    "snippet": "The basic technology used for Tor's anonymity is onion routing. This method includes encapsulating data in many layers of encryption, each presenting a layer ...",
+    "host_name": "thesesjournal.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.quora.com/What-is-the-Onion-Router-TOR-and-why-should-I-use-it-or-not",
+    "name": "What is the Onion Router TOR, and why should I use it or not? - Quora",
+    "snippet": "Aug 21, 2019 · Tor is a web browser used to surf the web or the Deep web anonymously it works by Bouncing your communication in a distributed tor Networks( ...",
+    "host_name": "www.quora.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://learningnetwork.cisco.com/s/question/0D56e0000EBumUTCQZ/the-onion-router-tor",
+    "name": "The Onion Router (Tor) - Cisco Learning Network",
+    "snippet": "May 5, 2025 · It allows users to browse the internet privately by routing their traffic through a distributed network of volunteer-operated servers, known as ...",
+    "host_name": "learningnetwork.cisco.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://www.cyberdefensemagazine.com/security-audit-reveals-critical-flaws-in-veracrypt-promptly-fixed-with-a-new-release",
+    "name": "Security audit reveals critical flaws in VeraCrypt, promptly",
+    "snippet": "Oct 19, 2016 — A new audit of the disk- encryption software revealed the existence of eight critical, three medium, and 15 low -severity vulnerabilities . Read more",
+    "host_name": "www.cyberdefensemagazine.com",
+    "rank": 0,
+    "date": "Oct 19, 2016",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.csoonline.com/article/558449/critical-flaws-found-in-open-source-encryption-software-veracrypt.html",
+    "name": "Critical flaws found in open-source encryption software",
+    "snippet": "Oct 18, 2016 — A new security audit has found critical vulnerabilities in VeraCrypt , an open-source, full-disk encryption program that's the direct ... Read more",
+    "host_name": "www.csoonline.com",
+    "rank": 1,
+    "date": "Oct 18, 2016",
+    "favicon": ""
+  },
+  {
+    "url": "https://avlab.pl/wp-content/uploads/2021/02/Veracrypt-audyt.pdf",
+    "name": "Security Evaluation of VeraCrypt",
+    "snippet": "We also did not find vulnerabilities in the cryptographic algorithms of VeraCrypt . However, VeraCrypt still uses the outdated and deprecated RIPEMD-160 hash ... Read more 118 pages",
+    "host_name": "avlab.pl",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://shattered.io/veracrypt-vs-bitlocker",
+    "name": "VeraCrypt vs BitLocker: Free, Open-Source, 5 Ciphers [2026]",
+    "snippet": "Jun 19, 2026 — VeraCrypt achieves AES encryption throughput of approximately 3.3 GB/s with less than 3% performance degradation relative to unencrypted reads. ...",
+    "host_name": "shattered.io",
+    "rank": 3,
+    "date": "Jun 19, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://discuss.privacyguides.net/t/veracrypt-not-being-updated-for-almost-a-year/20003",
+    "name": "VeraCrypt not being updated for almost a year - Questions",
+    "snippet": "Aug 12, 2024 — There have been a number of issues with TrueCrypt, the most well known one that I can remember is the weak number of rounds RIPEMD-160 used in ... Read more",
+    "host_name": "discuss.privacyguides.net",
+    "rank": 4,
+    "date": "Aug 12, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "https://veracrypt.io/en/Release%20Notes.html",
+    "name": "Release Notes",
+    "snippet": "Correct most of the security vulnerabilities reported. Correct security issues detected by Static Code Analysis, mainly under Windows. Correct issue of ...",
+    "host_name": "veracrypt.io",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dl.acm.org/doi/10.1145/3706598.3713983",
+    "name": "Lessons From a Long-Term Engagement With VeraCrypt",
+    "snippet": "This section introduces VeraCrypt , reviews related usability research, and outlines challenges in adopting usable security in open-source projects. 2.1 ... Read more",
+    "host_name": "dl.acm.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://protonvpn.com/features/strong-encryption?srsltid=AfmBOorrIMe8vLPEghuzsGgXAnLHOgvpRRd6qROD3u5OO7cvW2MySwQ_",
+    "name": "Protect your data with strong encryption",
+    "snippet": "Proton VPN is a secure VPN that uses strong encryption ciphers, such as AES-256 and ChaCha20, to defend your online privacy.",
+    "host_name": "protonvpn.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

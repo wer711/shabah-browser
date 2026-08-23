@@ -39,9 +39,6 @@ export function SettingsView() {
 
   const handleLanguageChange = (v: string) => {
     s.set("language", v as any);
-    const html = document.documentElement;
-    html.setAttribute("lang", v);
-    html.setAttribute("dir", v === "ar" ? "rtl" : "ltr");
     toast.success(t("settings.languageChanged"));
   };
 
@@ -89,7 +86,7 @@ export function SettingsView() {
           </TabsList>
 
           <div className="flex-1 min-w-0 space-y-6">
-            {/* GENERAL (merged: general + search) */}
+            {/* GENERAL */}
             <TabsContent value="general" className="mt-0 space-y-6">
               <Section title={t("settings.general")}>
                 <Row label={t("settings.theme")} desc={t("settings.themeDesc")}>
@@ -137,51 +134,51 @@ export function SettingsView() {
               </Section>
 
               <Section title={t("settings.search")}>
-                <Row label="موجز شبح AI" desc="إظهار إجابة موجزة من الذكاء الاصطناعي فوق النتائج">
+                <Row label={t("settings.aiSummarizer")} desc={t("settings.aiSummarizerDesc")}>
                   <Switch checked={s.aiSummarizer} onCheckedChange={(v) => s.set("aiSummarizer", v)} />
                 </Row>
-                <Row label="اختصارات !بانغ" desc="مثال: !ويكي البرتقال → ويكيبيديا">
+                <Row label={t("settings.bangsEnabled")} desc={t("settings.bangsEnabledDesc")}>
                   <Switch checked={s.bangsEnabled} onCheckedChange={(v) => s.set("bangsEnabled", v)} />
                 </Row>
-                <Row label="الإجابات الفورية" desc="عرض بطاقات معلومات عند تطابق الاستعلام">
+                <Row label={t("settings.instantAnswers")} desc={t("settings.instantAnswersDesc")}>
                   <Switch checked={s.instantAnswers} onCheckedChange={(v) => s.set("instantAnswers", v)} />
                 </Row>
-                <Row label="البحث الآمن" desc="فلترة المحتوى الإباحي">
+                <Row label={t("settings.safeSearch")} desc={t("settings.safeSearchDesc")}>
                   <Switch checked={s.safeSearch} onCheckedChange={(v) => s.set("safeSearch", v)} />
                 </Row>
               </Section>
             </TabsContent>
 
-            {/* PROTECTION (merged: circuit + security) */}
+            {/* PROTECTION */}
             <TabsContent value="protection" className="mt-0 space-y-6">
               <Section title={t("settings.circuit")}>
                 <div className="rounded-lg border border-border bg-background/40 p-3">
-                  <div className="text-xs text-muted-foreground mb-2">عقد التوجيه الحالية:</div>
+                  <div className="text-xs text-muted-foreground mb-2">{t("settings.currentRelays")}</div>
                   <CircuitPreview />
                 </div>
-                <Row label="دولة حارس الدخول" desc="أول عقدة ترى اتصالك">
+                <Row label={t("settings.entryCountry")} desc={t("settings.entryCountryDesc")}>
                   <Select value={s.entryCountry} onValueChange={(v) => s.set("entryCountry", v)}>
                     <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="auto">تلقائي (موصى به)</SelectItem>
+                      <SelectItem value="auto">{t("settings.autoRotate")}</SelectItem>
                       {COUNTRIES.map((c) => (
                         <SelectItem key={c.code} value={c.code}>{c.flag} {c.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </Row>
-                <Row label="دولة عقدة الخروج" desc="آخر عقدة — هي ما يظهر للموقع">
+                <Row label={t("settings.exitCountry")} desc={t("settings.exitCountryDesc")}>
                   <Select value={s.exitCountry} onValueChange={(v) => s.set("exitCountry", v)}>
                     <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="auto">تلقائي (موصى به)</SelectItem>
+                      <SelectItem value="auto">{t("settings.autoRotate")}</SelectItem>
                       {COUNTRIES.map((c) => (
                         <SelectItem key={c.code} value={c.code}>{c.flag} {c.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </Row>
-                <Row label="دوران تلقائي" desc={`تبديل الدائرة كل ${s.rotateEveryMinutes} دقيقة`}>
+                <Row label={t("settings.autoRotateInterval")} desc={t("settings.autoRotateDesc", { count: s.rotateEveryMinutes })}>
                   <div className="w-40">
                     <Slider
                       value={[s.rotateEveryMinutes]}
@@ -192,20 +189,20 @@ export function SettingsView() {
                     />
                   </div>
                 </Row>
-                <Row label="منع WebRTC" desc="يمنع تسريب IP الحقيقي عبر WebRTC">
+                <Row label={t("settings.blockWebRTC")} desc={t("settings.blockWebRTCDesc")}>
                   <Switch checked={s.blockWebRTC} onCheckedChange={(v) => s.set("blockWebRTC", v)} />
                 </Row>
-                <Row label="مفتاح الإيقاف (Kill Switch)" desc="يقطع الاتصال عند تعطّل الـ VPN">
+                <Row label={t("settings.killSwitch")} desc={t("settings.killSwitchDesc")}>
                   <Switch checked={s.killSwitch} onCheckedChange={(v) => s.set("killSwitch", v)} />
                 </Row>
                 <div className="flex gap-2 pt-2">
                   <Button onClick={rotateCircuit} variant="outline" size="sm">
                     <RotateCcw className="w-3.5 h-3.5 ml-1.5" />
-                    دورة جديدة فورية
+                    {t("settings.instantRotate")}
                   </Button>
                   <Button onClick={newIdentity} variant="outline" size="sm">
                     <RotateCcw className="w-3.5 h-3.5 ml-1.5" />
-                    هوية جديدة
+                    {t("settings.newIdentityBtn")}
                   </Button>
                 </div>
               </Section>
@@ -213,56 +210,55 @@ export function SettingsView() {
               <Section title={t("settings.security")}>
                 <SecuritySlider />
                 <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs leading-relaxed">
-                  <span className="text-primary font-semibold">ماذا يعني ذلك؟</span>{" "}
-                  في المستوى الأقصى، السكربتات والصور والخطوط الخارجية معطّلة،
-                  وبصمة الجهاز مموّهة بالكامل. هذا يبطّئ بعض المواقع لكنه يحميك أقصى حماية.
+                  <span className="text-primary font-semibold">{t("settings.securityMeaning")}</span>{" "}
+                  {t("settings.securityMeaningText")}
                 </div>
               </Section>
             </TabsContent>
 
-            {/* PRIVACY (stays the same) */}
+            {/* PRIVACY */}
             <TabsContent value="privacy" className="mt-0 space-y-6">
               <Section title={t("settings.privacy")}>
-                <Row label="عدم حفظ السجل" desc="لا نتائج بحث، لا تاريخ تصفّح، لا كوكيز بعد إغلاق الجلسة">
+                <Row label={t("settings.noHistory")} desc={t("settings.noHistoryDesc")}>
                   <Switch checked={s.noHistory} onCheckedChange={(v) => s.set("noHistory", v)} />
                 </Row>
-                <Row label="إزالة المتتبّعات" desc="حظر سكربتات التتبّع (Google Analytics, Facebook Pixel...)">
+                <Row label={t("settings.stripTrackers")} desc={t("settings.stripTrackersDesc")}>
                   <Switch checked={s.stripTrackers} onCheckedChange={(v) => s.set("stripTrackers", v)} />
                 </Row>
-                <Row label="حظر الإعلانات" desc="حظر شبكات الإعلانات والنوافذ المنبثقة">
+                <Row label={t("settings.blockAds")} desc={t("settings.blockAdsDesc")}>
                   <Switch checked={s.blockAds} onCheckedChange={(v) => s.set("blockAds", v)} />
                 </Row>
-                <Row label="كوكيز الطرف الثالث" desc="حظر ملفات تعريف الارتباط من نطاقات خارجية">
+                <Row label={t("settings.blockThirdPartyCookies")} desc={t("settings.blockThirdPartyCookiesDesc")}>
                   <Switch checked={s.blockThirdPartyCookies} onCheckedChange={(v) => s.set("blockThirdPartyCookies", v)} />
                 </Row>
-                <Row label="تمويه البصمة" desc="تغيير User-Agent و Canvas WebGL لمنع التعرف">
+                <Row label={t("settings.spoofFingerprint")} desc={t("settings.spoofFingerprintDesc")}>
                   <Switch checked={s.spoofFingerprint} onCheckedChange={(v) => s.set("spoofFingerprint", v)} />
                 </Row>
-                <Row label="منع فحص المنافذ" desc="حظر موجات مسح المنافذ و محاولات الاختراق">
+                <Row label={t("settings.doshBlock")} desc={t("settings.doshBlockDesc")}>
                   <Switch checked={s.doshBlock} onCheckedChange={(v) => s.set("doshBlock", v)} />
                 </Row>
-                <Row label="فتح الروابط عبر البروكسي دائمًا" desc="كل رابط تضغط عليه يُفتح عبر شبح مجهّل">
+                <Row label={t("settings.openLinksViaProxy")} desc={t("settings.openLinksViaProxyDesc")}>
                   <Switch checked={s.openLinksViaProxy} onCheckedChange={(v) => s.set("openLinksViaProxy", v)} />
                 </Row>
               </Section>
             </TabsContent>
 
-            {/* MORE (merged: firewall + about) */}
+            {/* MORE */}
             <TabsContent value="more" className="mt-0 space-y-6">
               <Section title={t("settings.firewall")}>
-                <Row label="تفعيل الجدار الناري" desc="حركة مرور نشطة مع حظر تلقائي">
+                <Row label={t("settings.firewallEnabled")} desc={t("settings.firewallEnabledDesc")}>
                   <Switch checked={s.firewallEnabled} onCheckedChange={(v) => s.set("firewallEnabled", v)} />
                 </Row>
-                <Row label="حظر النطاقات الخبيثة" desc="قائمة سوداء محدّثة من نطاقات التصيّد">
+                <Row label={t("settings.blockMaliciousDomains")} desc={t("settings.blockMaliciousDomainsDesc")}>
                   <Switch checked={s.blockMaliciousDomains} onCheckedChange={(v) => s.set("blockMaliciousDomains", v)} />
                 </Row>
-                <Row label="حظر المتتبّعات" desc="حظر اتصالات لمستتعقبي الويب">
+                <Row label={t("settings.firewallBlockTrackers")} desc={t("settings.firewallBlockTrackersDesc")}>
                   <Switch checked={s.blockTrackers} onCheckedChange={(v) => s.set("blockTrackers", v)} />
                 </Row>
-                <Row label="حظر تعدين العملات" desc="منع سكربتات Crypto-Mining التي تستنزف المعالج">
+                <Row label={t("settings.blockCryptoMining")} desc={t("settings.blockCryptoMiningDesc")}>
                   <Switch checked={s.blockCryptoMining} onCheckedChange={(v) => s.set("blockCryptoMining", v)} />
                 </Row>
-                <Row label="حظر بصمة الإصبع" desc="منع تقنيات Fingerprinting (Canvas, Audio, Font)">
+                <Row label={t("settings.blockFingerprinting")} desc={t("settings.blockFingerprintingDesc")}>
                   <Switch checked={s.blockFingerprinting} onCheckedChange={(v) => s.set("blockFingerprinting", v)} />
                 </Row>
                 <FirewallPreview />

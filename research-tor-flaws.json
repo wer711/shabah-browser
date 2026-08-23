@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://www.cyberproof.com/blog/an-analysis-of-the-security-risks-posed-by-tor-browser",
+    "name": "An Analysis of the Security Risks Posed by Tor Browser - CyberProof",
+    "snippet": "Let's have a look at the main cyber security risks associated with using Tor, which include bypassing network security, connecting to criminal sites on the Dark ...",
+    "host_name": "www.cyberproof.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://therecord.media/recently-patched-firefox-bug-being-used-against-tor-browser-users",
+    "name": "Recently-patched Firefox bug exploited against Tor browser users",
+    "snippet": "Oct 14, 2024 · The bug, tracked as CVE-2024-9680, allows attackers to execute malicious code within the browser's content process — the environment where web ...",
+    "host_name": "therecord.media",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.bitlyft.com/resources/is-tor-browser-safe",
+    "name": "Tor Browser Privacy vs. Security Explained | BitLyft",
+    "snippet": "Jul 27, 2026 · Is the Tor Browser really safe? Learn how Tor works, its privacy benefits, security risks, vulnerabilities, and what organizations should know ...",
+    "host_name": "www.bitlyft.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://thehackernews.com/2026/07/researchers-show-single-malicious.html?m=1",
+    "name": "Researchers Show a Single Malicious Webpage Visit Can Compromise",
+    "snippet": "Jul 29, 2026 · Nebula says CVE-2026-10702 lets a malicious webpage compromise Tor Browser and start an Android 17 root chain.",
+    "host_name": "thehackernews.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://app.opencve.io/cve/?product=tor_browser&vendor=torproject",
+    "name": "Tor Browser CVEs and Security Vulnerabilities - OpenCVE",
+    "snippet": "Explore the latest vulnerabilities and security issues of Tor Browser in the CVE database. Tor Browser through 8.5.3 has an information exposure vulnerability. ...",
+    "host_name": "app.opencve.io",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.malwarebytes.com/blog/news/2024/10/tor-browser-and-firefox-users-should-update-to-fix-actively-exploited-vulnerability",
+    "name": "Tor Browser and Firefox users should update to fix actively exploited",
+    "snippet": "Oct 16, 2024 · The vulnerability, tracked as CVE-2024-9680, allows attackers to execute malicious code within the browser's content process, which is the ...",
+    "host_name": "www.malwarebytes.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.msspalert.com/brief/tor-browser-users-targeted-with-firefox-vuln",
+    "name": "Tor Browser Users Targeted With Firefox Vuln | brief - MSSP Alert",
+    "snippet": "Oct 15, 2024 · Attacks exploiting a recently addressed critical use-after-free vulnerability in Mozilla Firefox, tracked as CVE-2024-9680, ...",
+    "host_name": "www.msspalert.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.securityweek.com/tor-code-audit-finds-17-vulnerabilities",
+    "name": "Tor Code Audit Finds 17 Vulnerabilities - SecurityWeek",
+    "snippet": "Jan 31, 2024 · Over a dozen vulnerabilities discovered in Tor audit, including a high-risk flaw that can be exploited to inject arbitrary bridges.",
+    "host_name": "www.securityweek.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

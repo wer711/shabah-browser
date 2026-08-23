@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://discuss.privacyguides.net/t/what-does-privacy-guides-think-about-criticism-of-brave-browser/18260",
+    "name": "What does Privacy Guides think about criticism of Brave",
+    "snippet": "May 10, 2024 — While this is true (from an end user perspective/not concerned with the future), the problem is that Brave's advertising network and crypto ... Read more",
+    "host_name": "discuss.privacyguides.net",
+    "rank": 0,
+    "date": "May 10, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.invicti.com/blog/web-security/brave-browser-sacrifices-security",
+    "name": "Brave Browser Sacrifices Security",
+    "snippet": "Feb 20, 2019 — This blog post describes a controversial update to Brave that contained a whitelist of tracking URLs, causing online discussions, and a ... Read more",
+    "host_name": "www.invicti.com",
+    "rank": 1,
+    "date": "Feb 20, 2019",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/brave_browser/comments/1au7okx/how_good_is_brave_in_terms_of_security_and_privacy",
+    "name": "How good is Brave in terms of security and privacy?",
+    "snippet": "I'm using Firefox right now. How good is Brave in terms of security and privacy compared to Firefox?",
+    "host_name": "www.reddit.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://holdmybeerr.medium.com/i-used-brave-browser-for-years-heres-the-truth-nobody-tells-you-0d85bf1218c2",
+    "name": "I Used Brave Browser for 6+ Years, Here's the Truth Nobody",
+    "snippet": "Brave's built‐in Shields block trackers, fingerprinting, and third‐party cookies, basically ghosting the web's invisible leeches. Less ...",
+    "host_name": "holdmybeerr.medium.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.facebook.com/groups/itsnporg/posts/1572367863544638",
+    "name": "Is it safe to use Brave browser?",
+    "snippet": "Is it safe to use brave browser?",
+    "host_name": "www.facebook.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=VLEVY66BRnE",
+    "name": "Brave Browser Review How Safe is This Web Browser? (2026)",
+    "snippet": "Brave is one of the leading secure Chrome alternatives , Brave to go above and beyond in terms of security and privacy, while still retaining ...",
+    "host_name": "www.youtube.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://brave.com/blog/comet-prompt-injection",
+    "name": "Indirect Prompt Injection in Perplexity Comet",
+    "snippet": "Aug 20, 2025 — The attack we developed shows that traditional Web security assumptions don't hold for agentic AI, and that we need new security and privacy ...",
+    "host_name": "brave.com",
+    "rank": 6,
+    "date": "Aug 20, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://discuss.privacyguides.net/t/webkit-security-vs-others/27365",
+    "name": "WebKit security vs others - Questions",
+    "snippet": "May 7, 2025 — Browser has historically been immune to Firefox-related vulnerabilities , WebKit vulnerabilities is certainly far smaller than on Firefox/Gecko- ...",
+    "host_name": "discuss.privacyguides.net",
+    "rank": 7,
+    "date": "May 7, 2025",
+    "favicon": ""
+  }
+]

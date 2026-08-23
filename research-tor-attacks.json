@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://security.stackexchange.com/questions/147402/how-do-traffic-correlation-attacks-against-tor-users-work",
+    "name": "How do traffic correlation attacks against Tor users work?",
+    "snippet": "Jan 5, 2017 — The way we generally explain it is that Tor tries to protect against traffic analysis , where an attacker tries to learn whom to investigate, but ... Read more",
+    "host_name": "security.stackexchange.com",
+    "rank": 0,
+    "date": "Jan 5, 2017",
+    "favicon": ""
+  },
+  {
+    "url": "https://petsymposium.org/2007/papers/PET2007_preproc_Browser_based.pdf",
+    "name": "Browser-Based Attacks on Tor",
+    "snippet": "by T Abbott · Cited by 134 — For most traffic analysis attacks , the attacker must control both the exit node and entry node at the same time . For our attack , if a client leaves a browser . Read more 16 pages",
+    "host_name": "petsymposium.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/TOR/comments/1fjmon5/german_authorities_successfully_deanonymized_tor",
+    "name": "German Authorities Successfully Deanonymized Tor Users",
+    "snippet": "German authorities have successfully deanonymized Tor users through a large-scale timing attack . timing of data packets, they were able to link ...",
+    "host_name": "www.reddit.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://support.torproject.org/about-tor/security/attacks-on-onion-routing",
+    "name": "What attacks remain against onion routing? - Security - Support",
+    "snippet": "certain attacks - such as traffic correlation, timing analysis , Tor exit node to correlate timings of your traffic as it enters the Tor network",
+    "host_name": "support.torproject.org",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.whonix.org/wiki/Speculative_Tor_Attacks",
+    "name": "Speculative Tor Attacks",
+    "snippet": "Tor network is susceptible to Traffic Analysis , These techniques similarly affect Whonix and could potentially lead to deanonymization under specific ...",
+    "host_name": "www.whonix.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://securityaffairs.com/30202/hacking/tor-traffic-analysis-attack.html",
+    "name": "81 percent Tor users is identifiable with traffic analysis attack",
+    "snippet": "Nov 15, 2014 — The research revealed that more than 81 percent of Tor clients can be de-anonymized by exploiting a new traffic analysis attack based on ...",
+    "host_name": "securityaffairs.com",
+    "rank": 5,
+    "date": "Nov 15, 2014",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/221655562_Browser-Based_Attacks_on_Tor",
+    "name": "Browser-Based Attacks on Tor",
+    "snippet": "This paper describes a new attack on the anonymity of web browsing with Tor . The attack tricks a user's web browser into sending a distinctive signal over ... Read more",
+    "host_name": "www.researchgate.net",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Attacks-on-Tor/Attacks-on-Tor",
+    "name": "Attacks-on-Tor/Attacks-on-Tor: Thirteen Years of Tor Attacks",
+    "snippet": "Correlation attacks are well-known de-anonymization attacks . controls both the entry node and the exit node . Timing attacks , With traffic analysis an adversary ...",
+    "host_name": "github.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]
